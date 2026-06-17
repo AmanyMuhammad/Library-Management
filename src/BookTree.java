@@ -26,9 +26,45 @@ public class BookTree {
         return root;
     }
 
+    public boolean update(int ISBN, String newTitle, String newAuthor, int newCopiesNum) {
+        BookNode target = search(root, ISBN);
 
+        // If No Input => Keep the old data
+        if (newTitle == null || newTitle.trim().isEmpty()) {
+            newTitle = target.getTitle();
+        }
+        if (newAuthor == null || newAuthor.trim().isEmpty()) {
+            newAuthor = target.getAuthor();
+        }
+        if (newCopiesNum < 0) {
+            newCopiesNum = 0;
+        }
 
+        // Author name changed --> Migrate his read counts
+        if (!target.getAuthor().equals(newAuthor)) {
+            int readCount = authorReadCounts.getOrDefault(target.getAuthor(), 0);
+            authorReadCounts.remove(target.getAuthor());
+            authorReadCounts.put(newAuthor, readCount);
+        }
 
+        target.setTitle(newTitle);
+        target.setAuthor(newAuthor);
+        target.setCopiesNum(newCopiesNum);
+
+        target.setStatus(newCopiesNum > 0);
+
+        return true;
+    }
+
+    private BookNode search(BookNode node, int ISBN) {
+        if (node == null || ISBN == node.getISBN())
+            return node;
+
+        if (ISBN < node.getISBN())
+            return search(node.left, ISBN);
+
+        return search(node.right, ISBN);
+    }
 
 
 
