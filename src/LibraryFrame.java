@@ -176,6 +176,8 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             resetButtonState(borrowersShowButton, new ImageIcon(getClass().getResource("/Images/borrower.png")));
             resetButtonState(waitingListsShowButton, new ImageIcon(getClass().getResource("/Images/waitingList.png")));
+
+            this.add(new BooksFrame().pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==borrowersShowButton){
@@ -186,6 +188,9 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             resetButtonState(booksShowButton, new ImageIcon(getClass().getResource("/Images/book.png")));
             resetButtonState(waitingListsShowButton, new ImageIcon(getClass().getResource("/Images/waitingList.png")));
+
+            // Switch to borrowers
+            this.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==waitingListsShowButton){
