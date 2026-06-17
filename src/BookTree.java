@@ -26,41 +26,66 @@ public class BookTree {
         return root;
     }
 
+
+
+
+
+
+
+
+
+
+    // For testing
+    public void display() {
+        displayHelper(root);
+    }
+    // For testing
+    private void displayHelper(BookNode root) {
+
+        if (root != null) {
+            displayHelper(root.left);
+            System.out.print(root.getISBN() + " ");
+            displayHelper(root.right);
+        }
+    }
+
 }
 
 
 
 
 
+/*
 
-//    public void addBST(){
-//
-//    }
-//
-//    public void searchBST(){
-//
-//    }
-//
-//    public void editBST(){
-//
-//    }
-//
-//    public void deleteBST(){
-//
-//    }
-//
-//    public void addAVL(){
-//
-//    }
-//
-//    public void searchAVL(){
-//
-//    }
-//
-//    public void editAVL(){
-//
-//    }
-//
-//    public void deleteAVL(){
-//
-//    }
+    Delay
+    public void searchBST(){
+
+    }
+
+
+    public void editBST(){
+
+    }
+
+    public void deleteBST(){
+
+    }
+
+    public void addAVL(){
+
+    }
+
+    ???
+    public void editAVL(){
+
+    }
+
+    public void deleteAVL(){
+
+    }
+
+
+    Done:
+    - insert BST
+
+ */
