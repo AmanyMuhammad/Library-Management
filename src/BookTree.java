@@ -1,40 +1,66 @@
 import java.util.HashMap;
 
 public class BookTree {
-    BookNode bookNode;
-    HashMap<String,Integer> authorReadCounts=new HashMap<>();
+    private BookNode root;
+    private HashMap<String,Integer> authorReadCounts=new HashMap<>();
 
-
-    public void addBST(){
-
+    public void recursiveInsert(BookNode newNode) {
+        root = insert(root, newNode);
     }
 
-    public void searchBST(){
+    private BookNode insert(BookNode root, BookNode newNode) {
 
-    }
+        int data = newNode.getISBN();
 
-    public void editBST(){
+        if (root == null) {
+            root = newNode;
+            return root;
+        }
+        else if (data < root.getISBN()) {
+            root.left = insert(root.left, newNode);
+        }
+        else {
+            root.right = insert(root.right, newNode);
+        }
 
-    }
-
-    public void deleteBST(){
-
-    }
-
-    public void addAVL(){
-
-    }
-
-    public void searchAVL(){
-
-    }
-
-    public void editAVL(){
-
-    }
-
-    public void deleteAVL(){
-
+        return root;
     }
 
 }
+
+
+
+
+
+
+//    public void addBST(){
+//
+//    }
+//
+//    public void searchBST(){
+//
+//    }
+//
+//    public void editBST(){
+//
+//    }
+//
+//    public void deleteBST(){
+//
+//    }
+//
+//    public void addAVL(){
+//
+//    }
+//
+//    public void searchAVL(){
+//
+//    }
+//
+//    public void editAVL(){
+//
+//    }
+//
+//    public void deleteAVL(){
+//
+//    }

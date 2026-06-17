@@ -7,6 +7,8 @@ public class BookNode {
     private int copiesNum;
     private boolean status;
     private int borrowCount=0;
+    public BookNode left;
+    public BookNode right;
 
     public BookNode(int ISBN,String title,String author,int copiesNum){
         this.ISBN=ISBN;
@@ -14,6 +16,7 @@ public class BookNode {
         this.author=author;
         this.copiesNum=copiesNum;
         status=true;
+        left = right = null;
     }
 
     public int getISBN() {
