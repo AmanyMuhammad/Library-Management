@@ -4,6 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class BorrowersFrame extends JPanel implements ActionListener, MouseListener, FocusListener {
 
@@ -354,8 +355,11 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == borrowButton) {
-            // TODO: open BorrowFrame
-            // BorrowFrame borrowFrame = new BorrowFrame(tableModel);
+            try {
+                BorrowFrame borrowFrame = new BorrowFrame(tableModel);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         if (e.getSource() == editButton) {
