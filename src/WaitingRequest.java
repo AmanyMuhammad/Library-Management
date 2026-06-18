@@ -1,12 +1,34 @@
+import java.time.LocalDate;
+
 public class WaitingRequest {
+    private int studentID;
     private String studentName;
     private int bookISBN;
     private boolean isGraduate;
+    private LocalDate requestDate;
 
-    public WaitingRequest(String studentName,int bookISBN,boolean isGraduate){
+    public WaitingRequest(int studentID, String studentName,int bookISBN,boolean isGraduate,LocalDate requestDate){
+        this.studentID=studentID;
         this.studentName=studentName;
         this.bookISBN=bookISBN;
         this.isGraduate=isGraduate;
+        this.requestDate=requestDate;
+    }
+
+    public LocalDate getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
     public String getStudentName() {
