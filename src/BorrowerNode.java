@@ -3,18 +3,25 @@ import java.time.LocalDate;
 public class BorrowerNode {
     private int id;
     private String name;
-    private String borrowedBook;
+    private long BookISBN;
     private LocalDate borrowDate;
     private LocalDate returnDate;
-    private int maxBorrows=3;
+    private final int maxBorrows=3;
+    private int currentBorrowsCount=0;
     private boolean isGraduate;
+    private String recordStatus;
 
-    public BorrowerNode(String name,String borrowedBook,LocalDate borrowDate,boolean isGraduate){
+    BorrowerNode left;
+    BorrowerNode right;
+
+    public BorrowerNode(int id, String name, long BookISBN, LocalDate borrowDate, boolean isGraduate){
+        this.id=id;
         this.name=name;
-        this.borrowedBook=borrowedBook;
+        this.BookISBN = BookISBN;
         this.borrowDate=borrowDate;
         this.returnDate=borrowDate.plusDays(20);
         this.isGraduate=isGraduate;
+        this.recordStatus="Active";
     }
 
     public int getId() {
@@ -33,12 +40,12 @@ public class BorrowerNode {
         this.name = name;
     }
 
-    public String getBorrowedBook() {
-        return borrowedBook;
+    public long getBookISBN() {
+        return BookISBN;
     }
 
-    public void setBorrowedBook(String borrowedBook) {
-        this.borrowedBook = borrowedBook;
+    public void setBookISBN(long bookISBN) {
+        this.BookISBN = bookISBN;
     }
 
     public LocalDate getBorrowDate() {
@@ -51,10 +58,6 @@ public class BorrowerNode {
 
     public int getMaxBorrows() {
         return maxBorrows;
-    }
-
-    public void setMaxBorrows(int maxBorrows) {
-        this.maxBorrows = maxBorrows;
     }
 
     public LocalDate getReturnDate() {
@@ -71,5 +74,21 @@ public class BorrowerNode {
 
     public void setGraduate(boolean graduate) {
         isGraduate = graduate;
+    }
+
+    public int getCurrentBorrowsCount() {
+        return currentBorrowsCount;
+    }
+
+    public void setCurrentBorrowsCount(int currentBorrowsCount) {
+        this.currentBorrowsCount = currentBorrowsCount;
+    }
+
+    public String getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(String recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }
