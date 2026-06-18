@@ -9,6 +9,7 @@ public class BookNode {
     private int borrowCount=0;
     public BookNode left;
     public BookNode right;
+    public int height = 0;
 
     public BookNode(int ISBN,String title,String author,int copiesNum){
         this.ISBN=ISBN;
