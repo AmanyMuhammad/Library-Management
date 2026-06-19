@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class LibraryManagement {
     BorrowTree borrowers = new BorrowTree();
     BookTree books = new BookTree();
+    WaitingList waitingList=new WaitingList(0);
 
     public boolean checkBorrowerExist(int studentID) {
         if (borrowers.exists(borrowers.getRoot(), studentID))
@@ -93,6 +94,16 @@ public class LibraryManagement {
         borrowers.update(studentID,newName,newBorrowDate);
 
     }
+
+    public void addWaitingRequest(int studentID, String studentName,long bookISBN,boolean isGraduate,LocalDate requestDate){
+        WaitingRequest request=new WaitingRequest(studentID,studentName,bookISBN,isGraduate,requestDate);
+        waitingList.insert(request);
+    }
+
+    public void deleteWaitingRequest(){
+        waitingList.extractMax();
+    }
+
 
 
 }

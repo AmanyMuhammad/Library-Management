@@ -3,11 +3,11 @@ import java.time.LocalDate;
 public class WaitingRequest {
     private int studentID;
     private String studentName;
-    private int bookISBN;
+    private long bookISBN;
     private boolean isGraduate;
     private LocalDate requestDate;
 
-    public WaitingRequest(int studentID, String studentName,int bookISBN,boolean isGraduate,LocalDate requestDate){
+    public WaitingRequest(int studentID, String studentName,long bookISBN,boolean isGraduate,LocalDate requestDate){
         this.studentID=studentID;
         this.studentName=studentName;
         this.bookISBN=bookISBN;
@@ -39,11 +39,11 @@ public class WaitingRequest {
         this.studentName = studentName;
     }
 
-    public int getBookISBN() {
+    public long getBookISBN() {
         return bookISBN;
     }
 
-    public void setBookISBN(int bookISBN) {
+    public void setBookISBN(long bookISBN) {
         this.bookISBN = bookISBN;
     }
 

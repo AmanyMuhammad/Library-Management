@@ -3,6 +3,12 @@ public class WaitingList {
     private int capacity;
     private int currentSize;
 
+    public WaitingList(int capacity) {
+        this.capacity = capacity;
+        this.waitingRequests = new WaitingRequest[capacity];
+        this.currentSize = 0;
+    }
+
     public void swap(int index1,int index2){
         WaitingRequest temp=waitingRequests[index1];
         waitingRequests[index1]=waitingRequests[index2];
@@ -79,16 +85,33 @@ public class WaitingList {
         }
     }
 
-    public void insert(WaitingRequest request){
+    public boolean insert(WaitingRequest request){
+        if(currentSize==capacity)
+            return false;
 
+        int index=currentSize;
+        waitingRequests[index]=request;
+        currentSize++;
+        heapifyUp(index);
+
+        return true;
     }
 
-    public void delete(WaitingRequest request){
+    public WaitingRequest extractMax(){
+        if(currentSize==0)
+            return null;
 
+        if(currentSize==1){
+            currentSize--;
+            return waitingRequests[0];
+        }
+
+        WaitingRequest first=waitingRequests[0];
+        waitingRequests[0]=waitingRequests[currentSize-1];
+        currentSize--;
+        heapify(0);
+
+        return first;
     }
-
-
-
-
 
 }
