@@ -176,6 +176,21 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             resetButtonState(borrowersShowButton, new ImageIcon(getClass().getResource("/Images/borrower.png")));
             resetButtonState(waitingListsShowButton, new ImageIcon(getClass().getResource("/Images/waitingList.png")));
+
+            // Switch to books
+
+            Container contentPane = this.getContentPane();
+
+            BorderLayout layout = (BorderLayout) contentPane.getLayout();
+            Component center = layout.getLayoutComponent(BorderLayout.CENTER);
+
+            if (center != null) {
+                contentPane.remove(center);
+                contentPane.add(new BooksFrame().pagePanel, BorderLayout.CENTER);
+                contentPane.revalidate();
+                contentPane.repaint();
+            }
+            //this.add(new BooksFrame().pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==borrowersShowButton){
@@ -186,6 +201,22 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             resetButtonState(booksShowButton, new ImageIcon(getClass().getResource("/Images/book.png")));
             resetButtonState(waitingListsShowButton, new ImageIcon(getClass().getResource("/Images/waitingList.png")));
+
+            // Switch to borrowers
+
+            Container contentPane = this.getContentPane();
+
+            BorderLayout layout = (BorderLayout) contentPane.getLayout();
+            Component center = layout.getLayoutComponent(BorderLayout.CENTER);
+
+            if (center != null) {
+                contentPane.remove(center);
+                contentPane.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
+                contentPane.revalidate();
+                contentPane.repaint();
+            }
+
+            //this.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==waitingListsShowButton){

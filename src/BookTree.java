@@ -1,40 +1,227 @@
 import java.util.HashMap;
 
 public class BookTree {
-    BookNode bookNode;
-    HashMap<String,Integer> authorReadCounts=new HashMap<>();
+    private BookNode root;
+    private HashMap<String,Integer> authorReadCounts=new HashMap<>();
 
-
-    public void addBST(){
-
+    private void recursiveInsertBST(BookNode newNode) {
+        root = insertBST(root, newNode);
     }
 
-    public void searchBST(){
+    private BookNode insertBST(BookNode root, BookNode newNode) {
 
+        int data = newNode.getISBN();
+
+        if (root == null) {
+            root = newNode;
+            return root;
+        }
+        else if (data < root.getISBN()) {
+            root.left = insertBST(root.left, newNode);
+        }
+        else {
+            root.right = insertBST(root.right, newNode);
+        }
+
+        return root;
     }
 
-    public void editBST(){
+    public boolean update(int ISBN, String newTitle, String newAuthor, int newCopiesNum) {
+        BookNode target = search(root, ISBN);
 
+        // If No Input => Keep the old data
+        if (newTitle == null || newTitle.trim().isEmpty()) {
+            newTitle = target.getTitle();
+        }
+        if (newAuthor == null || newAuthor.trim().isEmpty()) {
+            newAuthor = target.getAuthor();
+        }
+        if (newCopiesNum < 0) {
+            newCopiesNum = 0;
+        }
+
+        // Author name changed --> Migrate his read counts
+        if (!target.getAuthor().equals(newAuthor)) {
+            int readCount = authorReadCounts.getOrDefault(target.getAuthor(), 0);
+            authorReadCounts.remove(target.getAuthor());
+            authorReadCounts.put(newAuthor, readCount);
+        }
+
+        target.setTitle(newTitle);
+        target.setAuthor(newAuthor);
+        target.setCopiesNum(newCopiesNum);
+
+        target.setStatus(newCopiesNum > 0);
+
+        return true;
     }
 
-    public void deleteBST(){
+    private BookNode search(BookNode node, int ISBN) {
+        if (node == null || ISBN == node.getISBN())
+            return node;
 
+        if (ISBN < node.getISBN())
+            return search(node.left, ISBN);
+
+        return search(node.right, ISBN);
     }
 
-    public void addAVL(){
-
+    private int height(BookNode node) {
+        return (node == null) ? -1 : node.height;
     }
 
-    public void searchAVL(){
-
+    private void updateHeight(BookNode node) {
+        node.height = 1 + Math.max(height(node.left), height(node.right));
     }
 
-    public void editAVL(){
-
+    private int balanceFactor(BookNode node) {
+        return (node == null) ? 0 : height(node.left) - height(node.right);
     }
 
-    public void deleteAVL(){
+    private BookNode rotateRight(BookNode n) {
+        BookNode y = n.left;
+        BookNode x = y.right;
 
+        y.right = n;
+        n.left = x;
+
+        updateHeight(n); // n is now lower, update first
+        updateHeight(y);
+        return y;
+    }
+
+    private BookNode rotateLeft(BookNode x) {
+        BookNode y = x.right;
+        BookNode z = y.left;
+
+        y.left = x;
+        x.right = z;
+
+        updateHeight(x);
+        updateHeight(y);
+        return y;
+    }
+
+    private BookNode rebalance(BookNode node) {
+        updateHeight(node);
+        int bf = balanceFactor(node);
+
+        // Left-Left
+        if (bf > 1 && balanceFactor(node.left) >= 0)
+            return rotateRight(node);
+
+        // Left-Right
+        if (bf > 1 && balanceFactor(node.left) < 0) {
+            node.left = rotateLeft(node.left);
+            return rotateRight(node);
+        }
+
+        // Right-Right
+        if (bf < -1 && balanceFactor(node.right) <= 0)
+            return rotateLeft(node);
+
+        // Right-Left
+        if (bf < -1 && balanceFactor(node.right) > 0) {
+            node.right = rotateRight(node.right);
+            return rotateLeft(node);
+        }
+
+        // no need to rebalance (already rebalanced)
+        return node;
+    }
+
+    public void insert(BookNode newNode) {
+        root = insertAVL(root, newNode);
+    }
+
+    private BookNode insertAVL(BookNode root, BookNode newNode) {
+        if (root == null)
+            return newNode;
+
+        if (newNode.getISBN() < root.getISBN())
+            root.left = insertAVL(root.left, newNode);
+        else if (newNode.getISBN() > root.getISBN())
+            root.right = insertAVL(root.right, newNode);
+
+        return rebalance(root);
+    }
+
+    public boolean delete(int ISBN) {
+        root = deleteAVL(root, ISBN);
+        return true;
+    }
+
+    private BookNode deleteAVL(BookNode node, int ISBN) {
+        if (node == null)
+            return null;
+
+        int cmp = Integer.compare(ISBN, node.getISBN());
+
+        if (ISBN < node.getISBN()) {
+            node.left = deleteAVL(node.left, ISBN);
+        } else if (ISBN > node.getISBN()) {
+            node.right = deleteAVL(node.right, ISBN);
+
+        } else {    // Node Found
+
+            // Case 1 & 2: zero or one child
+            if (node.left == null || node.right == null) {
+                node = (node.left != null) ? node.left : node.right;
+            } else {
+                // Case 3: two children — replace with in-order successor
+                BookNode successor = findMin(node.right);
+
+                // Copy successor's data into current node (ISBN stays as key)
+                node.setTitle(successor.getTitle());
+                node.setAuthor(successor.getAuthor());
+                node.setCopiesNum(successor.getCopiesNum());
+                node.setStatus(successor.isStatus());
+                node.setBorrowCount(successor.getBorrowCount());
+                node.setISBN(successor.getISBN());
+
+                // Delete the successor from the right subtree
+                node.right = deleteAVL(node.right, successor.getISBN());
+            }
+        }
+
+        // ── 2. Rebalance (node can be null if it was a leaf) ──
+        if (node == null)
+            return null;
+
+        return rebalance(node);
+    }
+
+    private BookNode findMin(BookNode node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
+
+
+    // For testing
+    public void display() {
+        displayHelper(root);
+    }
+    // For testing
+    private void displayHelper(BookNode root) {
+
+        if (root != null) {
+            displayHelper(root.left);
+            System.out.print(root.getISBN() + " ");
+            displayHelper(root.right);
+        }
     }
 
 }
+
+
+/*
+    Done:
+    - Insert BST
+    - Update BST
+    - Search BST
+    - Delete AVL
+    - Insert AVL
+
+ */
