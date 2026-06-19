@@ -1,7 +1,7 @@
 public class WaitingList {
-    private WaitingRequest[] waitingRequests;
-    private int capacity;
-    private int currentSize;
+    public WaitingRequest[] waitingRequests;
+    public int capacity;
+    public int currentSize;
 
     public WaitingList(int capacity) {
         this.capacity = capacity;

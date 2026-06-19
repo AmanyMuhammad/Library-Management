@@ -67,15 +67,15 @@ public class BorrowTree {
         return borrowsNum+countCurrentBorrowsNum(root.left,studentID)+countCurrentBorrowsNum(root.right,studentID);
     }
 
-    public void update(int studentID, String newName,LocalDate newBorrowDate){
-        if(exists(this.root,studentID)){
-            updateBorrower(this.root,studentID,newName,newBorrowDate);
-        }
+    public boolean update(int studentID, String newName,LocalDate newBorrowDate){
+        return updateBorrower(this.root,studentID,newName,newBorrowDate);
     }
 
-    public void updateBorrower(BorrowerNode borrower, int studentID, String newName,LocalDate newBorrowDate){
+    public boolean updateBorrower(BorrowerNode borrower, int studentID, String newName,LocalDate newBorrowDate){
         if(borrower==null)
-            return;
+            return false;
+
+        boolean isUpdated=false;
 
         if (borrower.getId()==studentID){
             if (newName!=null && !newName.equals(borrower.getName())){
@@ -86,11 +86,14 @@ public class BorrowTree {
                 borrower.setBorrowDate(newBorrowDate);
                 borrower.setReturnDate(newBorrowDate.plusDays(20));
             }
+
+            isUpdated=true;
         }
 
-        updateBorrower(borrower.left,studentID,newName,newBorrowDate);
-        updateBorrower(borrower.right,studentID,newName,newBorrowDate);
+        boolean leftUpdated=updateBorrower(borrower.left,studentID,newName,newBorrowDate);
+        boolean rightUpdated=updateBorrower(borrower.right,studentID,newName,newBorrowDate);
 
+        return isUpdated || leftUpdated || rightUpdated;
     }
 
 
