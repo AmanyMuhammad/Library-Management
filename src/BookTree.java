@@ -4,13 +4,17 @@ public class BookTree {
     private BookNode root;
     private HashMap<String,Integer> authorReadCounts=new HashMap<>();
 
+    public BookNode getRoot() {
+        return root;
+    }
+
     private void recursiveInsertBST(BookNode newNode) {
         root = insertBST(root, newNode);
     }
 
     private BookNode insertBST(BookNode root, BookNode newNode) {
 
-        int data = newNode.getISBN();
+        long data = newNode.getISBN();
 
         if (root == null) {
             root = newNode;
@@ -26,7 +30,7 @@ public class BookTree {
         return root;
     }
 
-    public boolean update(int ISBN, String newTitle, String newAuthor, int newCopiesNum) {
+    public boolean update(long ISBN, String newTitle, String newAuthor, int newCopiesNum) {
         BookNode target = search(root, ISBN);
 
         // If No Input => Keep the old data
@@ -56,7 +60,7 @@ public class BookTree {
         return true;
     }
 
-    private BookNode search(BookNode node, int ISBN) {
+    public BookNode search(BookNode node, long ISBN) {
         if (node == null || ISBN == node.getISBN())
             return node;
 
@@ -151,11 +155,11 @@ public class BookTree {
         return true;
     }
 
-    private BookNode deleteAVL(BookNode node, int ISBN) {
+    private BookNode deleteAVL(BookNode node, long ISBN) {
         if (node == null)
             return null;
 
-        int cmp = Integer.compare(ISBN, node.getISBN());
+        int cmp = Long.compare(ISBN, node.getISBN());
 
         if (ISBN < node.getISBN()) {
             node.left = deleteAVL(node.left, ISBN);

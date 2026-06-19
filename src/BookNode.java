@@ -1,7 +1,7 @@
 import java.util.HashMap;
 
 public class BookNode {
-    private int ISBN;
+    private long ISBN;
     private String title;
     private String author;
     private int copiesNum;
@@ -11,7 +11,7 @@ public class BookNode {
     public BookNode right;
     public int height = 0;
 
-    public BookNode(int ISBN,String title,String author,int copiesNum){
+    public BookNode(long ISBN,String title,String author,int copiesNum){
         this.ISBN=ISBN;
         this.title=title;
         this.author=author;
@@ -20,11 +20,11 @@ public class BookNode {
         left = right = null;
     }
 
-    public int getISBN() {
+    public long getISBN() {
         return ISBN;
     }
 
-    public void setISBN(int ISBN) {
+    public void setISBN(long ISBN) {
         this.ISBN = ISBN;
     }
 
