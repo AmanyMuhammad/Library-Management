@@ -5,6 +5,7 @@ public class LibraryManagement {
     BorrowTree borrowers = new BorrowTree();
     BookTree books = new BookTree();
     WaitingList waitingList=new WaitingList(100);
+    BorrowersFrame borrowersFrame=null;
 
     public boolean checkBorrowerExist(int studentID) {
         if (borrowers.exists(borrowers.getRoot(), studentID))

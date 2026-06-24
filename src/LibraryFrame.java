@@ -18,8 +18,10 @@ public class LibraryFrame extends JFrame implements ActionListener {
     ImageIcon brownBookIcon;
     ImageIcon brownBorrowerIcon;
     ImageIcon brownWaitingListIcon;
+    LibraryManagement libraryManagement;
 
-    public LibraryFrame(JPanel pagePanel){
+    public LibraryFrame(JPanel booksPanel, JPanel borrowerPanel, LibraryManagement libraryManagement){
+        this.libraryManagement=libraryManagement;
         backgroundColor =new Color(243, 241, 231);
         mainTextColor =new Color(55, 55, 51);
         sidebarBgColor =new Color(126, 93, 46);
@@ -120,7 +122,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
         menuPanel.add(borrowersShowButton);
         menuPanel.add(waitingListsShowButton);
         this.add(menuPanel,BorderLayout.WEST);
-        this.add(pagePanel, BorderLayout.CENTER);
+        this.add(booksPanel,BorderLayout.CENTER);
         this.setVisible(true);
 
         this.addWindowListener(new WindowAdapter() {
@@ -186,7 +188,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             if (center != null) {
                 contentPane.remove(center);
-                contentPane.add(new BooksFrame().pagePanel, BorderLayout.CENTER);
+                contentPane.add(new BooksFrame(libraryManagement).pagePanel, BorderLayout.CENTER);
                 contentPane.revalidate();
                 contentPane.repaint();
             }
@@ -210,13 +212,23 @@ public class LibraryFrame extends JFrame implements ActionListener {
             Component center = layout.getLayoutComponent(BorderLayout.CENTER);
 
             if (center != null) {
+
                 contentPane.remove(center);
-                contentPane.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
+
+                if (libraryManagement.borrowersFrame == null) {
+                    libraryManagement.borrowersFrame = new BorrowersFrame(libraryManagement);
+                }
+
+                BorrowersFrame currentBorrowers =libraryManagement.borrowersFrame;
+                contentPane.add(currentBorrowers.pagePanel, BorderLayout.CENTER);
+
+
+//                contentPane.add(new BorrowersFrame(libraryManagement).pagePanel, BorderLayout.CENTER);
                 contentPane.revalidate();
                 contentPane.repaint();
             }
 
-            //this.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
+//            this.add(new BorrowersFrame(libraryManagement).pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==waitingListsShowButton){

@@ -27,8 +27,10 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     Color backgroundColor;
     Color mainTextColor;
     Color sidebarBgColor;
+    LibraryManagement libraryManagement;
 
-    public BorrowersFrame() {
+    public BorrowersFrame(LibraryManagement libraryManagement) {
+        this.libraryManagement=libraryManagement;
         backgroundColor = new Color(243, 241, 231);
         mainTextColor   = new Color(55, 55, 51);
         sidebarBgColor  = new Color(126, 93, 46);
@@ -154,7 +156,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
         // tablePanel
         {
-            String[] columns = {"ID", "Name", "Email", "Phone", "Borrowed Books"};
+            String[] columns = {"Uni ID", "Name", "Book ISBN", "Borrow Date", "Expected Return Date", "Student Status"};
             tableModel    = new DefaultTableModel(columns, 0);
             borrowersTable = new JTable(tableModel);
             borrowersTable.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -187,7 +189,17 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             borrowersTable.addMouseListener(this);
 
             // Sample row
-            tableModel.addRow(new Object[]{"B001", "Alice Johnson", "alice@example.com", "555-1234", 2});
+//            tableModel.addRow(new Object[]{"B001", "Alice Johnson", "alice@example.com", "555-1234", 2});
+
+            tableModel.setRowCount(0);
+
+            if (libraryManagement.borrowers != null && libraryManagement.borrowers.getRoot() != null) {
+                libraryManagement.borrowers.fillTableFromTree(libraryManagement.borrowers.getRoot(),tableModel);
+            }
+
+            borrowersTable.revalidate();
+            borrowersTable.repaint();
+
 
             // Center renderer for all columns
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -267,32 +279,42 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         nameValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
         nameValueLabel.setBounds(115, 100, 350, 40);
 
-        // Email
-        JLabel emailLabel = new JLabel("Email : ");
-        emailLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        emailLabel.setBounds(30, 160, 350, 40);
+        // ISBN
+        JLabel ISBNLabel = new JLabel("Book ISBN : ");
+        ISBNLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        ISBNLabel.setBounds(30, 160, 350, 40);
 
-        JLabel emailValueLabel = new JLabel(borrowersTable.getValueAt(row, 2).toString());
-        emailValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        emailValueLabel.setBounds(115, 160, 350, 40);
+        JLabel ISBNValueLabel = new JLabel(borrowersTable.getValueAt(row, 2).toString());
+        ISBNValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        ISBNValueLabel.setBounds(170, 160, 350, 40);
 
-        // Phone
-        JLabel phoneLabel = new JLabel("Phone : ");
-        phoneLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        phoneLabel.setBounds(30, 220, 350, 40);
+        // Borrow Date
+        JLabel borrowDateLabel = new JLabel("Borrow Date : ");
+        borrowDateLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        borrowDateLabel.setBounds(30, 220, 350, 40);
 
-        JLabel phoneValueLabel = new JLabel(borrowersTable.getValueAt(row, 3).toString());
-        phoneValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        phoneValueLabel.setBounds(120, 220, 350, 40);
+        JLabel borrowDateValueLabel = new JLabel(borrowersTable.getValueAt(row, 3).toString());
+        borrowDateValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        borrowDateValueLabel.setBounds(195, 220, 350, 40);
 
-        // Borrowed Books
-        JLabel borrowedLabel = new JLabel("Borrowed : ");
-        borrowedLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        borrowedLabel.setBounds(30, 280, 350, 40);
+        // Return Date
+        JLabel returnDateLabel = new JLabel("Return Date : ");
+        returnDateLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        returnDateLabel.setBounds(30, 280, 350, 40);
 
-        JLabel borrowedValueLabel = new JLabel(borrowersTable.getValueAt(row, 4).toString());
-        borrowedValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        borrowedValueLabel.setBounds(170, 280, 350, 40);
+        JLabel returnDateValueLabel = new JLabel(borrowersTable.getValueAt(row, 4).toString());
+        returnDateValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        returnDateValueLabel.setBounds(190, 280, 350, 40);
+
+        // Status
+        JLabel statusLabel = new JLabel("Student Status : ");
+        statusLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        statusLabel.setBounds(30, 340, 350, 40);
+
+        JLabel statusValueLabel = new JLabel(borrowersTable.getValueAt(row, 5).toString());
+        statusValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        statusValueLabel.setBounds(220, 340, 350, 40);
+
 
         // Delete button
         ImageIcon originalDeleteIcon = new ImageIcon(getClass().getResource("/Images/delete1.png"));
@@ -337,12 +359,14 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         showPanel.add(idValueLabel);
         showPanel.add(nameLabel);
         showPanel.add(nameValueLabel);
-        showPanel.add(emailLabel);
-        showPanel.add(emailValueLabel);
-        showPanel.add(phoneLabel);
-        showPanel.add(phoneValueLabel);
-        showPanel.add(borrowedLabel);
-        showPanel.add(borrowedValueLabel);
+        showPanel.add(ISBNLabel);
+        showPanel.add(ISBNValueLabel);
+        showPanel.add(borrowDateLabel);
+        showPanel.add(borrowDateValueLabel);
+        showPanel.add(returnDateLabel);
+        showPanel.add(returnDateValueLabel);
+        showPanel.add(statusLabel);
+        showPanel.add(statusValueLabel);
         showPanel.add(deleteButton);
         showPanel.add(editButton);
         showPanel.add(hideButton);

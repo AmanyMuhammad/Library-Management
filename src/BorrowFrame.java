@@ -4,20 +4,26 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class BorrowFrame extends JFrame implements ActionListener {
+
     JPanel headerPanel;
     JPanel addPagePanel;
     JLabel addLabel;
+    JTextField uniIDField;
     JTextField bookISBNField;
     JTextField borrowerNameField;
     JTextField borrowDateField;
     JTextField expectedReturnDateField;
     JButton borrowButton;
     JButton editButton;
+    JCheckBox graduateCheckBox;
     DefaultTableModel tableModel;
     int id;
     int row;
+    boolean graduated=false;
+    LibraryManagement libraryManagement=new LibraryManagement();
 
 
     BorrowFrame(DefaultTableModel tableModel) throws IOException {
@@ -52,17 +58,17 @@ public class BorrowFrame extends JFrame implements ActionListener {
 
         //ISBN Label
         gbc.gridx = 0;
-        JLabel ISBNLabel = new JLabel("Book ISBN");
-        ISBNLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-        ISBNLabel.setForeground(sidebarBgColor);
-        addPagePanel.add(ISBNLabel, gbc);
+        JLabel IDLabel = new JLabel("Uni ID");
+        IDLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
+        IDLabel.setForeground(sidebarBgColor);
+        addPagePanel.add(IDLabel, gbc);
 
         // Borrower's Name Label
         gbc.gridx = 1;
-        JLabel titleLabel = new JLabel("Borrower's Name");
-        titleLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-        titleLabel.setForeground(sidebarBgColor);
-        addPagePanel.add(titleLabel, gbc);
+        JLabel nameLabel = new JLabel("Borrower's Name");
+        nameLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
+        nameLabel.setForeground(sidebarBgColor);
+        addPagePanel.add(nameLabel, gbc);
 
 
         gbc.gridy = 1;
@@ -70,13 +76,13 @@ public class BorrowFrame extends JFrame implements ActionListener {
 
         //  ISBNField
         gbc.gridx = 0;
-        bookISBNField = new JTextField("ISBN");
-        bookISBNField.setPreferredSize(new Dimension(260, 42));
-        bookISBNField.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
-        bookISBNField.setBackground(backgroundColor);
-        bookISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-        bookISBNField.setEditable(true);
-        addPagePanel.add(bookISBNField, gbc);
+        uniIDField = new JTextField("Uni ID");
+        uniIDField.setPreferredSize(new Dimension(260, 42));
+        uniIDField.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
+        uniIDField.setBackground(backgroundColor);
+        uniIDField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
+        uniIDField.setEditable(true);
+        addPagePanel.add(uniIDField, gbc);
 
         //  Borrower's Name Field
         gbc.gridx = 1;
@@ -94,23 +100,32 @@ public class BorrowFrame extends JFrame implements ActionListener {
 
         //Borrow Date Label
         gbc.gridx = 0;
-        JLabel authorLabel = new JLabel("Borrow Date");
-        authorLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-        authorLabel.setForeground(sidebarBgColor);
-        addPagePanel.add(authorLabel, gbc);
+        JLabel ISBNLabel = new JLabel("Book ISBN");
+        ISBNLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
+        ISBNLabel.setForeground(sidebarBgColor);
+        addPagePanel.add(ISBNLabel, gbc);
 
         //Expected Return Date Label
         gbc.gridx = 1;
-        JLabel copiesNumLabel = new JLabel("Expected Return Date");
-        copiesNumLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-        copiesNumLabel.setForeground(sidebarBgColor);
-        addPagePanel.add(copiesNumLabel, gbc);
+        JLabel borrowDateLabel = new JLabel("Borrow Date");
+        borrowDateLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
+        borrowDateLabel.setForeground(sidebarBgColor);
+        addPagePanel.add(borrowDateLabel, gbc);
 
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.CENTER;
 
         //  Borrow Date Field
         gbc.gridx = 0;
+        bookISBNField = new JTextField("Book ISBN");
+        bookISBNField.setPreferredSize(new Dimension(260, 42));
+        bookISBNField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
+        bookISBNField.setBackground(backgroundColor);
+        bookISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
+        addPagePanel.add(bookISBNField, gbc);
+
+        //  Expected Return Date Field
+        gbc.gridx = 1;
         borrowDateField = new JTextField("Borrow Date");
         borrowDateField.setPreferredSize(new Dimension(260, 42));
         borrowDateField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
@@ -118,15 +133,14 @@ public class BorrowFrame extends JFrame implements ActionListener {
         borrowDateField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
         addPagePanel.add(borrowDateField, gbc);
 
-        //  Expected Return Date Field
-        gbc.gridx = 1;
-        expectedReturnDateField = new JTextField("Expectd Return Date");
-        expectedReturnDateField.setPreferredSize(new Dimension(260, 42));
-        expectedReturnDateField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
-        expectedReturnDateField.setBackground(backgroundColor);
-        expectedReturnDateField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-        addPagePanel.add(expectedReturnDateField, gbc);
+        gbc.gridx=0;
+        gbc.gridy=4;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = new Insets(-5, -60, 50, 180);
 
+        graduateCheckBox=new JCheckBox("Is Graduate?");
+        graduateCheckBox.setBackground(backgroundColor);
+        addPagePanel.add(graduateCheckBox,gbc);
 
         gbc.gridy = 4;
         gbc.gridx = 0;
@@ -144,11 +158,11 @@ public class BorrowFrame extends JFrame implements ActionListener {
         borrowButton.setFocusable(false);
         addPagePanel.add(borrowButton, gbc);
 
-
+        activeField(uniIDField, uniIDField.getText());
         activeField(bookISBNField, bookISBNField.getText());
         activeField(borrowerNameField, borrowerNameField.getText());
         activeField(borrowDateField, borrowDateField.getText());
-        activeField(expectedReturnDateField, expectedReturnDateField.getText());
+
 
         this.add(headerPanel,BorderLayout.NORTH);
         this.add(addPagePanel,BorderLayout.CENTER);
@@ -159,7 +173,35 @@ public class BorrowFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == borrowButton){
-            // adsfojjiodfsfgd
+
+            if (graduateCheckBox.isSelected()){
+                graduated=true;
+            }
+
+
+            String Add=libraryManagement.addBorrower(Integer.parseInt(uniIDField.getText()),borrowerNameField.getText(),Long.parseLong(bookISBNField.getText()), LocalDate.parse(borrowDateField.getText()),graduated);
+            if(Add.equals("The book is not exist!")){
+                JOptionPane.showMessageDialog(this,"The book is not exist!","Warning",JOptionPane.WARNING_MESSAGE);
+            }
+            else if (Add.equals("The book is not available , you are added to the waiting list")) {
+                JOptionPane.showMessageDialog(this,"The book is not available , you are added to the waiting list","Warning",JOptionPane.WARNING_MESSAGE);
+            }
+            else if(Add.equals("You are exceeded the maximum limit of borrows!")){
+                JOptionPane.showMessageDialog(this,"You are exceeded the maximum limit of borrows!","Warning",JOptionPane.WARNING_MESSAGE);
+            }
+            else if(Add.equals("The borrow was successful!")){
+                LocalDate returnDate=LocalDate.parse(borrowDateField.getText()).plusDays(20);
+                tableModel.addRow(new Object[]{
+                        Integer.parseInt(uniIDField.getText().trim()),
+                        borrowerNameField.getText().trim(),
+                        Long.parseLong(bookISBNField.getText().trim()),
+                        LocalDate.parse(borrowDateField.getText().trim()),
+                        returnDate,
+                        (graduated ? "Graduate" : "Student")
+                });
+
+                JOptionPane.showMessageDialog(this,"The borrow was successful!","Success",JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 

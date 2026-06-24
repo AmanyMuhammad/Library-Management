@@ -1,3 +1,4 @@
+import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 
 public class BorrowTree {
@@ -96,6 +97,31 @@ public class BorrowTree {
         return isUpdated || leftUpdated || rightUpdated;
     }
 
+    public void fillTableFromTree(BorrowerNode root, DefaultTableModel tableModel){
+        if(root==null)
+            return;
+
+        tableModel.addRow(new Object[]{
+                root.getId(),
+                root.getName(),
+                root.getBookISBN(),
+                root.getBorrowDate(),
+                root.getReturnDate(),
+                (root.isGraduate()?"Graduate":"Student")
+        });
+
+        fillTableFromTree(root.left,tableModel);
+        fillTableFromTree(root.right,tableModel);
+    }
+
+//    public void preOrderTraversal(BorrowerNode node){
+//        if(node==null)
+//            return;
+//
+//        System.out.println(node.getId());
+//        preOrderTraversal(node.left);
+//        preOrderTraversal(node.right);
+//    }
 
 
 }
