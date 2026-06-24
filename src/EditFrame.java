@@ -12,21 +12,25 @@ public class EditFrame extends JFrame implements ActionListener {
     JPanel headerPanel;
     JPanel addPagePanel;
     JLabel addLabel;
-    JTextField ISBNField;
+    //JTextField ISBNField;
+    JLabel ISBNLabel;
     JTextField titleField;
     JTextField authorField;
     JTextField copiesNumField;
     JButton editButton;
     DefaultTableModel tableModel;
+    long isbn;
     int id;
     int row;
+    BooksFrame booksFrame;
 
-    EditFrame(DefaultTableModel tableModel) throws IOException {
+    EditFrame(DefaultTableModel tableModel, long isbn, BooksFrame booksFrame) throws IOException {
         Color mainTextColor=new Color(55, 55, 51);
         Color backgroundColor =new Color(243, 241, 231);
         Color sidebarBgColor =new Color(126, 93, 46);
+        this.booksFrame = booksFrame;
 
-
+        this.isbn = isbn;
         this.tableModel=tableModel;
         this.setSize(new Dimension(650, 600));
         this.setLayout(new BorderLayout());
@@ -71,13 +75,19 @@ public class EditFrame extends JFrame implements ActionListener {
 
         //  ISBNField
         gbc.gridx = 0;
-        ISBNField = new JTextField("ISBN");
-        ISBNField.setPreferredSize(new Dimension(260, 42));
-        ISBNField.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
-        ISBNField.setBackground(backgroundColor);
-        ISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-        ISBNField.setEditable(true);
-        addPagePanel.add(ISBNField, gbc);
+        //ISBNField = new JTextField("ISBN");
+        //ISBNField.setPreferredSize(new Dimension(260, 42));
+        //ISBNField.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
+        //ISBNField.setBackground(backgroundColor);
+        //ISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
+        //ISBNField.setEditable(true);
+        //addPagePanel.add(ISBNField, gbc);
+        ISBNLabel = new JLabel(String.valueOf(this.isbn));
+        ISBNLabel.setPreferredSize(new Dimension(260, 42));
+        ISBNLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
+        //ISBNLabel.setBackground(backgroundColor);
+        //ISBNLabel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
+        addPagePanel.add(ISBNLabel, gbc);
 
         //  titleField
         gbc.gridx = 1;
@@ -146,7 +156,7 @@ public class EditFrame extends JFrame implements ActionListener {
         addPagePanel.add(editButton, gbc);
 
 
-        activeField(ISBNField,ISBNField.getText());
+        //activeField(ISBNField,ISBNField.getText());
         activeField(titleField, titleField.getText());
         activeField(authorField,authorField.getText());
         activeField(copiesNumField,copiesNumField.getText());
@@ -159,19 +169,22 @@ public class EditFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e){
-//        if (e.getSource()==editButton){
-//            try {
-//                inventory.editItem(id,row,nameField,categoryBox,priceField,quantityField,minQuantityField,this,tableModel);
-//                inventoryManagementFrame.refreshShowPanel();
-//            } catch (MyException ex) {
-//
-//                writeExceptionInFile(ex.getMessage());
-//            }
-//
-//
-//        }
-//
+        if (e.getSource()==editButton){
 
+            String title = titleField.getText();
+            String author = authorField.getText();
+            int copiesNum = Integer.parseInt(copiesNumField.getText());
+
+            Main.books.update(this.isbn, title, author, copiesNum);
+
+            booksFrame.tableModel.setRowCount(0);
+            booksFrame.fillTableFromTree(Main.books.getRoot());
+            booksFrame.pagePanel.remove(booksFrame.showPanel);
+            booksFrame.pagePanel.revalidate();
+            booksFrame.pagePanel.repaint();
+
+            this.dispose();
+        }
     }
 
     void activeField(JTextField field,String text) {

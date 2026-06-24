@@ -34,10 +34,10 @@ public class BookTree {
         BookNode target = search(root, ISBN);
 
         // If No Input => Keep the old data
-        if (newTitle == null || newTitle.trim().isEmpty()) {
+        if (newTitle.isEmpty() || newTitle.trim().isEmpty()) {
             newTitle = target.getTitle();
         }
-        if (newAuthor == null || newAuthor.trim().isEmpty()) {
+        if (newAuthor.isEmpty() || newAuthor.trim().isEmpty()) {
             newAuthor = target.getAuthor();
         }
         if (newCopiesNum < 0) {
@@ -150,7 +150,7 @@ public class BookTree {
         return rebalance(root);
     }
 
-    public boolean delete(int ISBN) {
+    public boolean delete(long ISBN) {
         root = deleteAVL(root, ISBN);
         return true;
     }

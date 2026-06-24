@@ -16,7 +16,7 @@ public class BookNode {
         this.title=title;
         this.author=author;
         this.copiesNum=copiesNum;
-        status=true;
+        status = (copiesNum != 0);
         left = right = null;
     }
 
@@ -58,6 +58,10 @@ public class BookNode {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getStringStatus() {
+        return (this.status) ? "Available" : "Unavailable";
     }
 
     public int getBorrowCount() {
