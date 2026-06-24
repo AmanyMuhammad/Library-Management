@@ -4,6 +4,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.Book;
+import java.util.ArrayList;
 import java.util.jar.JarOutputStream;
 
 public class BooksFrame extends JPanel implements ActionListener,MouseListener,FocusListener {
@@ -478,26 +480,43 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
                 pagePanel.repaint();
             }
         }
-
-
-//            if(e.getSource()==searchButton){
-//
-//                searchedName=searchField.getText();
-//                searchedCategory= categoryFilter.getSelectedItem().toString();
-//                searchedStatus=statusFilter.getSelectedItem().toString();
-//
-//                inventory.filter(searchedName,searchedCategory,searchedStatus,tableModel);        //
-//            }
+            if(e.getSource()==searchButton){
+                filter();
+            }
 
     }
 
-//        public void refreshShowPanel(){
-//            int row=itemsTable.getSelectedRow();
-//
-//            if (row!=-1){
-//                showItemInfo(row);
-//            }
-//        }
+    public void filter() {
+        ArrayList<BookNode> searchResults = new ArrayList<>();
+        String title = searchField.getText();
+
+        // Check if search field is empty (If true ==> fill the table with all the information)
+        if (title.isEmpty() || title.equalsIgnoreCase("Search by book name")) {
+            tableModel.setRowCount(0);
+            fillTableFromTree(Main.books.getRoot());
+            return;
+        }
+
+        fillSearchResults(searchResults, title, Main.books.getRoot());
+
+        tableModel.setRowCount(0);
+        for (BookNode book : searchResults) {
+            tableModel.addRow(new Object[]{ book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesNum(), book.getStringStatus()});
+        }
+    }
+
+    public void fillSearchResults(ArrayList<BookNode> results, String title, BookNode root) {
+
+        if (root == null)
+            return;
+
+        if (root.getTitle().equalsIgnoreCase(title)) {
+            results.add(root);
+        }
+
+        fillSearchResults(results, title, root.left);
+        fillSearchResults(results, title, root.right);
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
