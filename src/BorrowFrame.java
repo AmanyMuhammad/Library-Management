@@ -23,10 +23,11 @@ public class BorrowFrame extends JFrame implements ActionListener {
     int id;
     int row;
     boolean graduated=false;
-    LibraryManagement libraryManagement=new LibraryManagement();
+    LibraryManagement libraryManagement;
 
 
-    BorrowFrame(DefaultTableModel tableModel) throws IOException {
+    BorrowFrame(DefaultTableModel tableModel,LibraryManagement libraryManagement) throws IOException {
+        this.libraryManagement=libraryManagement;
         Color mainTextColor=new Color(55, 55, 51);
         Color backgroundColor =new Color(243, 241, 231);
         Color sidebarBgColor =new Color(126, 93, 46);
@@ -202,6 +203,8 @@ public class BorrowFrame extends JFrame implements ActionListener {
 
                 JOptionPane.showMessageDialog(this,"The borrow was successful!","Success",JOptionPane.INFORMATION_MESSAGE);
             }
+
+            this.dispose();
         }
     }
 

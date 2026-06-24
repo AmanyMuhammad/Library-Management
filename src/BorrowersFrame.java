@@ -28,12 +28,13 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     Color mainTextColor;
     Color sidebarBgColor;
     LibraryManagement libraryManagement;
+    int row=-1;
 
     public BorrowersFrame(LibraryManagement libraryManagement) {
-        this.libraryManagement=libraryManagement;
+        this.libraryManagement = libraryManagement;
         backgroundColor = new Color(243, 241, 231);
-        mainTextColor   = new Color(55, 55, 51);
-        sidebarBgColor  = new Color(126, 93, 46);
+        mainTextColor = new Color(55, 55, 51);
+        sidebarBgColor = new Color(126, 93, 46);
 
         pagePanel = new JPanel(new BorderLayout());
         pagePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -51,10 +52,10 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(backgroundColor);
 
-        searchField  = new JTextField();
+        searchField = new JTextField();
         searchButton = new JButton();
         borrowButton = new JButton();
-        titleLabel   = new JLabel();
+        titleLabel = new JLabel();
 
         // borrowButton
         {
@@ -157,7 +158,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         // tablePanel
         {
             String[] columns = {"Uni ID", "Name", "Book ISBN", "Borrow Date", "Expected Return Date", "Student Status"};
-            tableModel    = new DefaultTableModel(columns, 0);
+            tableModel = new DefaultTableModel(columns, 0);
             borrowersTable = new JTable(tableModel);
             borrowersTable.setFont(new Font("Segoe UI", Font.PLAIN, 15));
             borrowersTable.setBackground(backgroundColor);
@@ -194,7 +195,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             tableModel.setRowCount(0);
 
             if (libraryManagement.borrowers != null && libraryManagement.borrowers.getRoot() != null) {
-                libraryManagement.borrowers.fillTableFromTree(libraryManagement.borrowers.getRoot(),tableModel);
+                libraryManagement.borrowers.fillTableFromTree(libraryManagement.borrowers.getRoot(), tableModel);
             }
 
             borrowersTable.revalidate();
@@ -236,6 +237,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     }
 
     public void showItemInfo(int row) {
+        this.row=row;
         if (showPanel != null) {
             pagePanel.remove(showPanel);
         }
@@ -376,11 +378,19 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         pagePanel.repaint();
     }
 
+    public void refreshShowPanel(){
+        this.row=borrowersTable.getSelectedRow();
+
+        if (row!=-1){
+            showItemInfo(row);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == borrowButton) {
             try {
-                BorrowFrame borrowFrame = new BorrowFrame(tableModel);
+                BorrowFrame borrowFrame = new BorrowFrame(tableModel, libraryManagement);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -388,7 +398,11 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
         if (e.getSource() == editButton) {
             // TODO: open EditFrame for borrowers
-            // EditFrame editFrame = new EditFrame(tableModel);
+            try {
+                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel, libraryManagement,row);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         if (e.getSource() == hideButton) {
@@ -429,9 +443,17 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         pagePanel.requestFocusInWindow();
     }
 
-    @Override public void mouseReleased(MouseEvent e) {}
-    @Override public void mouseEntered(MouseEvent e)  {}
-    @Override public void mouseExited(MouseEvent e)   {}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 
     // ── FocusListener ──────────────────────────────────────────────────────
 
@@ -450,4 +472,17 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             searchField.setText("Search by borrower name");
         }
     }
+
+    public void refreshTableData() {
+        if (tableModel != null) {
+            tableModel.setRowCount(0);
+
+            if (libraryManagement != null && libraryManagement.borrowers != null && libraryManagement.borrowers.getRoot() != null) {
+                libraryManagement.borrowers.fillTableFromTree(libraryManagement.borrowers.getRoot(), tableModel);
+            }
+            borrowersTable.revalidate();
+            borrowersTable.repaint();
+        }
+    }
+
 }
