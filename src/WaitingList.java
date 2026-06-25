@@ -1,3 +1,5 @@
+import javax.swing.table.DefaultTableModel;
+
 public class WaitingList {
     public WaitingRequest[] waitingRequests;
     public int capacity;
@@ -112,6 +114,22 @@ public class WaitingList {
         heapify(0);
 
         return first;
+    }
+
+    public void fillTableFromHeap(int index, DefaultTableModel tableModel){
+        if(index>=currentSize)
+            return;
+
+        tableModel.addRow(new Object[]{
+                waitingRequests[index].getStudentID(),
+                waitingRequests[index].getStudentName(),
+                waitingRequests[index].getBookISBN(),
+                waitingRequests[index].getRequestDate(),
+                (waitingRequests[index].isGraduate() ? "Graduate":"Student")
+        });
+
+        fillTableFromHeap(left(index),tableModel);
+        fillTableFromHeap(right(index),tableModel);
     }
 
 }

@@ -5,6 +5,8 @@ public class LibraryManagement {
     BorrowTree borrowers = new BorrowTree();
     BookTree books = new BookTree();
     WaitingList waitingList=new WaitingList(100);
+    BorrowersFrame borrowersFrame=null;
+    WaitingListFrame waitingListFrame=null;
 
     public boolean checkBorrowerExist(int studentID) {
         if (borrowers.exists(borrowers.getRoot(), studentID))
@@ -57,7 +59,7 @@ public class LibraryManagement {
         if(root==null)
             return ;
 
-        if(root.getId()==studentID){
+        if(root.getStudentID()==studentID){
             searchResults.add(root);
         }
 
@@ -92,11 +94,28 @@ public class LibraryManagement {
                     while (waitingList.currentSize>0){
                         WaitingRequest currentRequest=waitingList.extractMax();
 
-                        if (currentRequest.getBookISBN()==bookISBN){
-                            addBorrower(currentRequest.getStudentID(),currentRequest.getStudentName(),currentRequest.getBookISBN(),LocalDate.now(),currentRequest.isGraduate());
-                            foundRequest=true;
-                            break;
+                        System.out.println(
+                                "PROCESSING WAITING REQUEST: "
+                                        + currentRequest.getStudentID()
+                        );
 
+                        if (currentRequest.getBookISBN()==bookISBN){
+
+                            book.setCopiesNum(book.getCopiesNum() + 1);
+                            book.setStatus(true);
+
+                            String result = addBorrower(
+                                    currentRequest.getStudentID(),
+                                    currentRequest.getStudentName(),
+                                    currentRequest.getBookISBN(),
+                                    LocalDate.now(),
+                                    currentRequest.isGraduate()
+                            );
+
+                            System.out.println(result);
+
+                            foundRequest = true;
+                            break;
                         }
 
                         list.add(currentRequest);
@@ -125,8 +144,8 @@ public class LibraryManagement {
 
     }
 
-    public String updateBorrowerInfo(int studentID, String newName,LocalDate newBorrowDate){
-        if(borrowers.update(studentID,newName,newBorrowDate)){
+    public String updateBorrowerInfo(int id, String newName,LocalDate newBorrowDate){
+        if(borrowers.update(id,newName,newBorrowDate)){
             return "The borrower info updated successfully!";
         }
 
@@ -135,6 +154,9 @@ public class LibraryManagement {
     }
 
     public void addWaitingRequest(int studentID, String studentName,long bookISBN,boolean isGraduate,LocalDate requestDate){
+        System.out.println("ADDED TO WAITING LIST: " + studentID);
+
+
         WaitingRequest request=new WaitingRequest(studentID,studentName,bookISBN,isGraduate,requestDate);
         waitingList.insert(request);
     }
@@ -142,6 +164,8 @@ public class LibraryManagement {
     public void deleteWaitingRequest(){
         waitingList.extractMax();
     }
+
+
 
 
 
