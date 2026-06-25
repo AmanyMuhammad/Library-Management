@@ -29,10 +29,9 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
     Color backgroundColor;
     Color mainTextColor;
     Color sidebarBgColor;
-    LibraryManagement libraryManagement;
 
-    public BooksFrame(LibraryManagement libraryManagement){
-            this.libraryManagement=libraryManagement;
+    public BooksFrame(){
+
             backgroundColor =new Color(243, 241, 231);
             mainTextColor =new Color(55, 55, 51);
             sidebarBgColor =new Color(126, 93, 46);

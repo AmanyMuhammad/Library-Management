@@ -27,11 +27,10 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     Color backgroundColor;
     Color mainTextColor;
     Color sidebarBgColor;
-    LibraryManagement libraryManagement;
     int row=-1;
 
-    public BorrowersFrame(LibraryManagement libraryManagement) {
-        this.libraryManagement = libraryManagement;
+    public BorrowersFrame() {
+
         backgroundColor = new Color(243, 241, 231);
         mainTextColor = new Color(55, 55, 51);
         sidebarBgColor = new Color(126, 93, 46);
@@ -194,8 +193,8 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
             tableModel.setRowCount(0);
 
-            if (libraryManagement.borrowers != null && libraryManagement.borrowers.getRoot() != null) {
-                libraryManagement.borrowers.fillTableFromTree(libraryManagement.borrowers.getRoot(), tableModel);
+            if (Main.libraryManagement.borrowers != null && Main.libraryManagement.borrowers.getRoot() != null) {
+                Main.libraryManagement.borrowers.fillTableFromTree(Main.libraryManagement.borrowers.getRoot(), tableModel);
             }
 
             borrowersTable.revalidate();
@@ -319,22 +318,22 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
 
         // Delete button
-        ImageIcon originalDeleteIcon = new ImageIcon(getClass().getResource("/Images/delete1.png"));
-        Image imgDelete = originalDeleteIcon.getImage();
-        Image newDeleteImg = imgDelete.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        ImageIcon deleteIcon = new ImageIcon(newDeleteImg);
-
-        deleteButton = new JButton("Delete");
-        deleteButton.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        deleteButton.setIcon(deleteIcon);
-        deleteButton.setHorizontalTextPosition(SwingConstants.RIGHT);
-        deleteButton.setHorizontalAlignment(SwingConstants.LEFT);
-        deleteButton.setIconTextGap(5);
-        deleteButton.setBounds(30, 500, 150, 50);
-        deleteButton.setBackground(new Color(231, 0, 11));
-        deleteButton.setForeground(backgroundColor);
-        deleteButton.setFocusable(false);
-        deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//        ImageIcon originalDeleteIcon = new ImageIcon(getClass().getResource("/Images/delete1.png"));
+//        Image imgDelete = originalDeleteIcon.getImage();
+//        Image newDeleteImg = imgDelete.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+//        ImageIcon deleteIcon = new ImageIcon(newDeleteImg);
+//
+//        deleteButton = new JButton("Delete");
+//        deleteButton.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+//        deleteButton.setIcon(deleteIcon);
+//        deleteButton.setHorizontalTextPosition(SwingConstants.RIGHT);
+//        deleteButton.setHorizontalAlignment(SwingConstants.LEFT);
+//        deleteButton.setIconTextGap(5);
+//        deleteButton.setBounds(30, 500, 150, 50);
+//        deleteButton.setBackground(new Color(231, 0, 11));
+//        deleteButton.setForeground(backgroundColor);
+//        deleteButton.setFocusable(false);
+//        deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Edit button
         ImageIcon originalEditIcon = new ImageIcon(getClass().getResource("/Images/edit1.png"));
@@ -348,13 +347,13 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         editButton.setHorizontalTextPosition(SwingConstants.RIGHT);
         editButton.setHorizontalAlignment(SwingConstants.LEFT);
         editButton.setIconTextGap(5);
-        editButton.setBounds(200, 500, 150, 50);
+        editButton.setBounds(120, 500, 150, 50);
         editButton.setBackground(sidebarBgColor);
         editButton.setForeground(backgroundColor);
         editButton.setFocusable(false);
         editButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        deleteButton.addActionListener(this);
+//        deleteButton.addActionListener(this);
         editButton.addActionListener(this);
 
         showPanel.add(idLabel);
@@ -369,7 +368,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         showPanel.add(returnDateValueLabel);
         showPanel.add(statusLabel);
         showPanel.add(statusValueLabel);
-        showPanel.add(deleteButton);
+//        showPanel.add(deleteButton);
         showPanel.add(editButton);
         showPanel.add(hideButton);
 
@@ -390,7 +389,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == borrowButton) {
             try {
-                BorrowFrame borrowFrame = new BorrowFrame(tableModel, libraryManagement);
+                BorrowFrame borrowFrame = new BorrowFrame(tableModel, Main.libraryManagement);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -399,7 +398,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         if (e.getSource() == editButton) {
             // TODO: open EditFrame for borrowers
             try {
-                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel, libraryManagement,row);
+                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel, Main.libraryManagement,row);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -411,15 +410,15 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             pagePanel.repaint();
         }
 
-        if (e.getSource() == deleteButton) {
-            int row = borrowersTable.getSelectedRow();
-            if (row != -1) {
-                tableModel.removeRow(row);
-                pagePanel.remove(showPanel);
-                pagePanel.revalidate();
-                pagePanel.repaint();
-            }
-        }
+//        if (e.getSource() == deleteButton) {
+//            int row = borrowersTable.getSelectedRow();
+//            if (row != -1) {
+//                tableModel.removeRow(row);
+//                pagePanel.remove(showPanel);
+//                pagePanel.revalidate();
+//                pagePanel.repaint();
+//            }
+//        }
 
         if (e.getSource() == searchButton) {
             // TODO: implement search/filter logic
@@ -477,8 +476,8 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         if (tableModel != null) {
             tableModel.setRowCount(0);
 
-            if (libraryManagement != null && libraryManagement.borrowers != null && libraryManagement.borrowers.getRoot() != null) {
-                libraryManagement.borrowers.fillTableFromTree(libraryManagement.borrowers.getRoot(), tableModel);
+            if (Main.libraryManagement != null && Main.libraryManagement.borrowers != null && Main.libraryManagement.borrowers.getRoot() != null) {
+                Main.libraryManagement.borrowers.fillTableFromTree(Main.libraryManagement.borrowers.getRoot(), tableModel);
             }
             borrowersTable.revalidate();
             borrowersTable.repaint();

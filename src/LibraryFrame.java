@@ -18,10 +18,9 @@ public class LibraryFrame extends JFrame implements ActionListener {
     ImageIcon brownBookIcon;
     ImageIcon brownBorrowerIcon;
     ImageIcon brownWaitingListIcon;
-    LibraryManagement libraryManagement;
 
-    public LibraryFrame(JPanel booksPanel, JPanel borrowerPanel, LibraryManagement libraryManagement){
-        this.libraryManagement=libraryManagement;
+    public LibraryFrame(JPanel booksPanel, JPanel borrowerPanel){
+
         backgroundColor =new Color(243, 241, 231);
         mainTextColor =new Color(55, 55, 51);
         sidebarBgColor =new Color(126, 93, 46);
@@ -188,7 +187,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             if (center != null) {
                 contentPane.remove(center);
-                contentPane.add(new BooksFrame(libraryManagement).pagePanel, BorderLayout.CENTER);
+                contentPane.add(new BooksFrame().pagePanel, BorderLayout.CENTER);
                 contentPane.revalidate();
                 contentPane.repaint();
             }
@@ -215,11 +214,11 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
                 contentPane.remove(center);
 
-                if (libraryManagement.borrowersFrame == null) {
-                    libraryManagement.borrowersFrame = new BorrowersFrame(libraryManagement);
+                if (Main.libraryManagement.borrowersFrame == null) {
+                    Main.libraryManagement.borrowersFrame = new BorrowersFrame();
                 }
 
-                BorrowersFrame currentBorrowers =libraryManagement.borrowersFrame;
+                BorrowersFrame currentBorrowers =Main.libraryManagement.borrowersFrame;
                 contentPane.add(currentBorrowers.pagePanel, BorderLayout.CENTER);
 
 
