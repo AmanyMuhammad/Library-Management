@@ -34,14 +34,14 @@ public class BookTree {
         BookNode target = search(root, ISBN);
 
         // If No Input => Keep the old data
-        if (newTitle.isEmpty() || newTitle.trim().isEmpty()) {
+        if (newTitle.isEmpty() || newTitle.trim().isEmpty() || newTitle.equalsIgnoreCase("Title")) {
             newTitle = target.getTitle();
         }
-        if (newAuthor.isEmpty() || newAuthor.trim().isEmpty()) {
+        if (newAuthor.isEmpty() || newAuthor.trim().isEmpty() || newAuthor.equalsIgnoreCase("Author")) {
             newAuthor = target.getAuthor();
         }
-        if (newCopiesNum < 0) {
-            newCopiesNum = 0;
+        if (newCopiesNum < 0 || newCopiesNum == target.getCopiesNum()) {
+            newCopiesNum = target.getCopiesNum();
         }
 
         // Author name changed --> Migrate his read counts
