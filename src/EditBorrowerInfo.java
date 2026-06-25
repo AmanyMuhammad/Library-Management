@@ -15,24 +15,42 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
     JLabel addLabel;
     JTextField UniIDField;
     JTextField nameField;
-    JTextField bookISBNField;
     JTextField borrowDateField;
     JButton editButton;
     DefaultTableModel tableModel;
     int id;
     int row;
+    BorrowerNode editedBorrower;
 
 
-    EditBorrowerInfo(DefaultTableModel tableModel,int row) throws IOException {
+    EditBorrowerInfo(DefaultTableModel tableModel,int row,BorrowerNode editedBorrower) throws IOException {
+        this.editedBorrower = editedBorrower;
         this.row=row;
         Color mainTextColor=new Color(55, 55, 51);
         Color backgroundColor =new Color(243, 241, 231);
         Color sidebarBgColor =new Color(126, 93, 46);
 
-
         this.tableModel=tableModel;
         this.setSize(new Dimension(650, 600));
         this.setLayout(new BorderLayout());
+
+
+        BorrowerNode root = Main.libraryManagement.borrowers.getRoot();
+
+        id = (Integer) tableModel.getValueAt(row, 0);
+
+        editedBorrower = Main.libraryManagement.borrowers.findById(Main.libraryManagement.borrowers.getRoot(), editedBorrower.getId());
+
+
+        if (editedBorrower == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Borrower not found!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            this.dispose();
+            return;
+        }
 
         headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(backgroundColor);
@@ -74,21 +92,22 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
 
         //  Uni ID Field
         gbc.gridx = 0;
-        UniIDField = new JTextField("Uni ID");
+        UniIDField = new JTextField(String.valueOf(editedBorrower.getStudentID()));
         UniIDField.setPreferredSize(new Dimension(260, 42));
         UniIDField.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
         UniIDField.setBackground(backgroundColor);
         UniIDField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-        UniIDField.setEditable(true);
+        UniIDField.setEnabled(false);
         addPagePanel.add(UniIDField, gbc);
 
         //  name Field
         gbc.gridx = 1;
-        nameField = new JTextField("Name");
+        nameField = new JTextField(editedBorrower.getName());
         nameField.setPreferredSize(new Dimension(260, 42));
+        nameField.setForeground(Color.BLACK);
         nameField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
         nameField.setBackground(backgroundColor);
-        nameField.setForeground(Color.LIGHT_GRAY);
+
         nameField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
         addPagePanel.add(nameField, gbc);
 
@@ -103,34 +122,18 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
         borrowDateLabel.setForeground(sidebarBgColor);
         addPagePanel.add(borrowDateLabel, gbc);
 
-//        //Book ISBN Label
-//        gbc.gridx = 1;
-//        JLabel bookISBNLabel = new JLabel("Book ISBN");
-//        bookISBNLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-//        bookISBNLabel.setForeground(sidebarBgColor);
-//        addPagePanel.add(bookISBNLabel, gbc);
-
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.CENTER;
 
         //  Borrow Date field
         gbc.gridx = 0;
-        borrowDateField = new JTextField("Borrow Date");
+        borrowDateField = new JTextField(String.valueOf(editedBorrower.getBorrowDate()));
         borrowDateField.setPreferredSize(new Dimension(260, 42));
         borrowDateField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
         borrowDateField.setBackground(backgroundColor);
+        borrowDateField.setForeground(Color.BLACK);
         borrowDateField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
         addPagePanel.add(borrowDateField, gbc);
-
-//        //  book ISBN Field
-//        gbc.gridx = 1;
-//        bookISBNField = new JTextField("Book ISBN");
-//        bookISBNField.setPreferredSize(new Dimension(260, 42));
-//        bookISBNField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
-//        bookISBNField.setBackground(backgroundColor);
-//        bookISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-//        addPagePanel.add(bookISBNField, gbc);
-
 
         gbc.gridy = 4;
         gbc.gridx = 0;
@@ -148,10 +151,8 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
         editButton.setFocusable(false);
         addPagePanel.add(editButton, gbc);
 
-
         activeField(UniIDField,UniIDField.getText());
         activeField(nameField, nameField.getText());
-//        activeField(bookISBNField, bookISBNField.getText());
         activeField(borrowDateField, borrowDateField.getText());
 
         this.add(headerPanel,BorderLayout.NORTH);
@@ -163,7 +164,8 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == editButton) {
-            String Edit = Main.libraryManagement.updateBorrowerInfo(Integer.parseInt(UniIDField.getText()), nameField.getText(), LocalDate.parse(borrowDateField.getText()));
+            String Edit = Main.libraryManagement.updateBorrowerInfo(editedBorrower.getId(), nameField.getText(), LocalDate.parse(borrowDateField.getText().trim()));
+
 
             if (Edit.equals("The borrower info updated successfully!")) {
 
@@ -187,24 +189,14 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
 
     void activeField(JTextField field,String text) {
 
-        field.setText(text);
-        field.setForeground(Color.LIGHT_GRAY);
-
         field.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (field.getText().equals(text)) {
-                    field.setText("");
-                    field.setForeground(Color.BLACK);
-                }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (field.getText().isEmpty()) {
-                    field.setText(text);
-                    field.setForeground(Color.LIGHT_GRAY);
-                }
+
             }
 
         });

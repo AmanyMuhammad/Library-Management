@@ -174,11 +174,12 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
 
             String Return=Main.libraryManagement.returnBook(Integer.parseInt(uniIDField.getText()),Long.parseLong(bookISBNField.getText()));
             BorrowerNode root= Main.libraryManagement.borrowers.getRoot();
-//            Main.libraryManagement.borrowers.find(root,Integer.parseInt(uniIDField.getText())).setRecordStatus("Returned");
+            Main.libraryManagement.waitingListFrame.refreshTableData();
+            Main.libraryManagement.borrowersFrame.refreshTableData();
 
             BorrowerNode borrowerNode=Main.libraryManagement.borrowers.find(root,Integer.parseInt(uniIDField.getText()));
             for (int i = 0; i <  Main.libraryManagement.borrowersFrame.borrowersTable.getRowCount(); i++) {
-                if(tableModel.getValueAt(i,0).equals(borrowerNode.getId())){
+                if(tableModel.getValueAt(i,0).equals(borrowerNode.getStudentID())){
                     tableModel.setValueAt(borrowerNode.getRecordStatus(),i,6);
                     break;
                 }
@@ -188,10 +189,12 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
 
             if(Return.equals("The book returned successfully and processed waiting list!")){
                 JOptionPane.showMessageDialog(this,"The book returned successfully and processed waiting list!","Success",JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
             }
 
             if(Return.equals("Error: No active borrow record found for this student and book!")){
                 JOptionPane.showMessageDialog(this,"Error: No active borrow record found for this student and book!!","Warning",JOptionPane.WARNING_MESSAGE);
+                this.dispose();
             }
 
 

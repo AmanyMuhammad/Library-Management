@@ -16,8 +16,10 @@ public class Main {
 
         BooksFrame b = new BooksFrame();
         libraryManagement.borrowersFrame = new BorrowersFrame();
+        libraryManagement.waitingListFrame = new WaitingListFrame();
 
-        LibraryFrame f = new LibraryFrame(b.pagePanel, libraryManagement.borrowersFrame.pagePanel);
+
+        LibraryFrame f = new LibraryFrame(b.pagePanel);
 
     }
 }

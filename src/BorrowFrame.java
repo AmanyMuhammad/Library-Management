@@ -15,13 +15,9 @@ public class BorrowFrame extends JFrame implements ActionListener {
     JTextField bookISBNField;
     JTextField borrowerNameField;
     JTextField borrowDateField;
-    JTextField expectedReturnDateField;
     JButton borrowButton;
-    JButton editButton;
     JCheckBox graduateCheckBox;
     DefaultTableModel tableModel;
-    int id;
-    int row;
     boolean graduated=false;
 
     BorrowFrame(DefaultTableModel tableModel) throws IOException {
@@ -184,25 +180,30 @@ public class BorrowFrame extends JFrame implements ActionListener {
             }
             else if (Add.equals("The book is not available , you are added to the waiting list")) {
                 JOptionPane.showMessageDialog(this,"The book is not available , you are added to the waiting list","Warning",JOptionPane.WARNING_MESSAGE);
+                this.dispose();
             }
             else if(Add.equals("You are exceeded the maximum limit of borrows!")){
                 JOptionPane.showMessageDialog(this,"You are exceeded the maximum limit of borrows!","Warning",JOptionPane.WARNING_MESSAGE);
+                this.dispose();
             }
             else if(Add.equals("The borrow was successful!")){
                 LocalDate returnDate=LocalDate.parse(borrowDateField.getText()).plusDays(20);
                 tableModel.addRow(new Object[]{
+
                         Integer.parseInt(uniIDField.getText().trim()),
                         borrowerNameField.getText().trim(),
                         Long.parseLong(bookISBNField.getText().trim()),
                         LocalDate.parse(borrowDateField.getText().trim()),
                         returnDate,
-                        (graduated ? "Graduate" : "Student")
+                        (graduated ? "Graduate" : "Student"),
+                        "Active"
                 });
 
                 JOptionPane.showMessageDialog(this,"The borrow was successful!","Success",JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
             }
 
-            this.dispose();
+
         }
     }
 

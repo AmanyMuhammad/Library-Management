@@ -5,6 +5,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class BorrowersFrame extends JPanel implements ActionListener, MouseListener, FocusListener {
@@ -21,7 +22,6 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     JButton borrowButton;
     JButton returnBookButton;
     JButton editButton;
-    JButton deleteButton;
     JButton hideButton;
     JTable borrowersTable;
     JScrollPane scrollPane;
@@ -266,24 +266,24 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                 public  Component getTableCellRendererComponent(JTable table,Object value,boolean isSelected,boolean isFocus,int row,int column) {
                     Component c = super.getTableCellRendererComponent(table, value, isSelected, isFocus, row, column);
 
-                    String status = value.toString();
-                    c.setFont(new Font("Segoe UI", Font.BOLD, 15));
+                    if (value != null) {
+                        String status = value.toString();
+                        c.setFont(new Font("Segoe UI", Font.BOLD, 15));
 
-                    switch (status) {
-                        case "Active":
-                            c.setForeground(new Color(0, 166, 62));
-                            break;
+                        switch (status) {
+                            case "Active":
+                                c.setForeground(new Color(0, 166, 62));
+                                break;
 
-                        case "Returned":
-                            c.setForeground(new Color(108, 117, 125));
-                            break;
+                            case "Returned":
+                                c.setForeground(new Color(108, 117, 125));
+                                break;
 
-                        default:
-                            c.setForeground(Color.BLACK);
+                            default:
+                                c.setForeground(Color.BLACK);
+                        }
                     }
-
                     return c;
-
                 }
 
             });
@@ -380,25 +380,6 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         statusValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
         statusValueLabel.setBounds(220, 340, 350, 40);
 
-
-        // Delete button
-//        ImageIcon originalDeleteIcon = new ImageIcon(getClass().getResource("/Images/delete1.png"));
-//        Image imgDelete = originalDeleteIcon.getImage();
-//        Image newDeleteImg = imgDelete.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-//        ImageIcon deleteIcon = new ImageIcon(newDeleteImg);
-//
-//        deleteButton = new JButton("Delete");
-//        deleteButton.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-//        deleteButton.setIcon(deleteIcon);
-//        deleteButton.setHorizontalTextPosition(SwingConstants.RIGHT);
-//        deleteButton.setHorizontalAlignment(SwingConstants.LEFT);
-//        deleteButton.setIconTextGap(5);
-//        deleteButton.setBounds(30, 500, 150, 50);
-//        deleteButton.setBackground(new Color(231, 0, 11));
-//        deleteButton.setForeground(backgroundColor);
-//        deleteButton.setFocusable(false);
-//        deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         // Edit button
         ImageIcon originalEditIcon = new ImageIcon(getClass().getResource("/Images/edit1.png"));
         Image imgEdit = originalEditIcon.getImage();
@@ -417,7 +398,6 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         editButton.setFocusable(false);
         editButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-//        deleteButton.addActionListener(this);
         editButton.addActionListener(this);
 
         showPanel.add(idLabel);
@@ -441,14 +421,6 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         pagePanel.repaint();
     }
 
-    public void refreshShowPanel(){
-        this.row=borrowersTable.getSelectedRow();
-
-        if (row!=-1){
-            showItemInfo(row);
-        }
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == borrowButton) {
@@ -462,7 +434,26 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         if (e.getSource() == editButton) {
             // TODO: open EditFrame for borrowers
             try {
-                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row);
+                int studentID = (Integer)tableModel.getValueAt(row,0);
+
+                long isbn = Long.parseLong(
+                        tableModel.getValueAt(row,2).toString()
+                );
+
+                LocalDate borrowDate = LocalDate.parse(
+                        tableModel.getValueAt(row,3).toString()
+                );
+
+                BorrowerNode borrower =
+                        Main.libraryManagement.borrowers.findBorrowRecord(
+                                Main.libraryManagement.borrowers.getRoot(),
+                                studentID,
+                                isbn,
+                                borrowDate
+                        );
+
+
+                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row,borrower);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -473,16 +464,6 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             pagePanel.revalidate();
             pagePanel.repaint();
         }
-
-//        if (e.getSource() == deleteButton) {
-//            int row = borrowersTable.getSelectedRow();
-//            if (row != -1) {
-//                tableModel.removeRow(row);
-//                pagePanel.remove(showPanel);
-//                pagePanel.revalidate();
-//                pagePanel.repaint();
-//            }
-//        }
 
         if (e.getSource() == searchButton) {
             // TODO: implement search/filter logic
@@ -498,7 +479,8 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                 if (searchResults != null && !searchResults.isEmpty()) {
                     for (BorrowerNode borrower : searchResults) {
                         tableModel.addRow(new Object[]{
-                                borrower.getId(),
+//                                borrower.getId(),
+                                borrower.getStudentID(),
                                 borrower.getName(),
                                 borrower.getBookISBN(),
                                 borrower.getBorrowDate(),

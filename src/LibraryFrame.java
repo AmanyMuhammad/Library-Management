@@ -19,7 +19,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
     ImageIcon brownBorrowerIcon;
     ImageIcon brownWaitingListIcon;
 
-    public LibraryFrame(JPanel booksPanel, JPanel borrowerPanel){
+    public LibraryFrame(JPanel booksPanel){
 
         backgroundColor =new Color(243, 241, 231);
         mainTextColor =new Color(55, 55, 51);
@@ -222,7 +222,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
                 contentPane.add(currentBorrowers.pagePanel, BorderLayout.CENTER);
 
 
-//                contentPane.add(new BorrowersFrame(libraryManagement).pagePanel, BorderLayout.CENTER);
+//                contentPane.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
                 contentPane.revalidate();
                 contentPane.repaint();
             }
@@ -238,6 +238,20 @@ public class LibraryFrame extends JFrame implements ActionListener {
 
             resetButtonState(booksShowButton, new ImageIcon(getClass().getResource("/Images/book.png")));
             resetButtonState(borrowersShowButton, new ImageIcon(getClass().getResource("/Images/borrower.png")));
+
+//            WaitingListFrame waitingListFrame=new WaitingListFrame();
+            Container contentPane = this.getContentPane();
+
+            BorderLayout layout = (BorderLayout) contentPane.getLayout();
+            Component center = layout.getLayoutComponent(BorderLayout.CENTER);
+
+            if (center != null) {
+                contentPane.remove(center);
+                contentPane.add(new WaitingListFrame().pagePanel, BorderLayout.CENTER);
+                contentPane.revalidate();
+                contentPane.repaint();
+            }
+
         }
 
     }
