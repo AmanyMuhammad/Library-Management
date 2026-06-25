@@ -18,14 +18,16 @@ public class AddFrame extends JFrame implements ActionListener {
     DefaultTableModel tableModel;
     int id;
     int row;
+    BooksFrame booksFrame;
 
 
-    AddFrame(DefaultTableModel tableModel) throws IOException {
+    AddFrame(DefaultTableModel tableModel, BooksFrame booksFrame) throws IOException {
         Color mainTextColor=new Color(55, 55, 51);
         Color backgroundColor =new Color(243, 241, 231);
         Color sidebarBgColor =new Color(126, 93, 46);
 
 
+        this.booksFrame = booksFrame;
         this.tableModel=tableModel;
         this.setSize(new Dimension(650, 600));
         this.setLayout(new BorderLayout());
@@ -158,16 +160,23 @@ public class AddFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e){
-//        if(e.getSource()==addButton){
-//            try {
-//                inventory.addItem(nameField,categoryBox,priceField,quantityField,minQuantityField,this,tableModel);
-//                inventory.checkPausedTasks();
-//            }catch (MyException ex){
-//                JOptionPane.showMessageDialog(this,ex.getMessage());
-//                writeExceptionInFile(ex.getMessage());
-//            }
-//
-//        }
+        if(e.getSource()==addButton){
+
+            long isbn = Long.parseLong(ISBNField.getText());
+            String title = titleField.getText();
+            String author = authorField.getText();
+            int copiesNum = Integer.parseInt(copiesNumField.getText());
+
+            BookNode node = new BookNode(isbn, title, author, copiesNum);
+
+            Main.books.insert(node);
+
+            //refresh
+            booksFrame.tableModel.setRowCount(0);
+            booksFrame.fillTableFromTree(Main.books.getRoot());
+
+            this.dispose();
+        }
     }
 
     void activeField(JTextField field,String text) {

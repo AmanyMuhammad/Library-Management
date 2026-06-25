@@ -34,14 +34,14 @@ public class BookTree {
         BookNode target = search(root, ISBN);
 
         // If No Input => Keep the old data
-        if (newTitle == null || newTitle.trim().isEmpty()) {
+        if (newTitle.isEmpty() || newTitle.trim().isEmpty() || newTitle.equalsIgnoreCase("Title")) {
             newTitle = target.getTitle();
         }
-        if (newAuthor == null || newAuthor.trim().isEmpty()) {
+        if (newAuthor.isEmpty() || newAuthor.trim().isEmpty() || newAuthor.equalsIgnoreCase("Author")) {
             newAuthor = target.getAuthor();
         }
-        if (newCopiesNum < 0) {
-            newCopiesNum = 0;
+        if (newCopiesNum < 0 || newCopiesNum == target.getCopiesNum()) {
+            newCopiesNum = target.getCopiesNum();
         }
 
         // Author name changed --> Migrate his read counts
@@ -150,7 +150,7 @@ public class BookTree {
         return rebalance(root);
     }
 
-    public boolean delete(int ISBN) {
+    public boolean delete(long ISBN) {
         root = deleteAVL(root, ISBN);
         return true;
     }
@@ -202,6 +202,43 @@ public class BookTree {
         return node;
     }
 
+    public int getAvailableBooksCount() {
+        return countAvailable(root);
+    }
+
+    private int countAvailable(BookNode node) {
+        if (node == null)
+            return 0;
+        int count = (node.isStatus()) ? 1 : 0;
+        return count + countAvailable(node.left) + countAvailable(node.right);
+    }
+
+    public BookNode getMostReadBook() {
+        return findMostReadBook(root, null);
+    }
+
+    private BookNode findMostReadBook(BookNode node, BookNode maxNode) {
+        if (node == null)
+            return maxNode;
+
+        if (maxNode == null || node.getBorrowCount() > maxNode.getBorrowCount())
+            maxNode = node;
+
+        maxNode = findMostReadBook(node.left, maxNode);
+        maxNode = findMostReadBook(node.right, maxNode);
+        return maxNode;
+    }
+
+    public String getMostReadAuthor() {
+        if (authorReadCounts.isEmpty())
+            return "No data";
+
+        return authorReadCounts.entrySet()
+                .stream()
+                .max(HashMap.Entry.comparingByValue())
+                .get()
+                .getKey();
+    }
 
     // For testing
     public void display() {
