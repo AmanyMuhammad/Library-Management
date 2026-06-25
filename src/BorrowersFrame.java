@@ -5,6 +5,8 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class BorrowersFrame extends JPanel implements ActionListener, MouseListener, FocusListener {
 
@@ -18,8 +20,8 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     JTextField searchField;
     JButton searchButton;
     JButton borrowButton;
+    JButton returnBookButton;
     JButton editButton;
-    JButton deleteButton;
     JButton hideButton;
     JTable borrowersTable;
     JScrollPane scrollPane;
@@ -27,11 +29,13 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     Color backgroundColor;
     Color mainTextColor;
     Color sidebarBgColor;
+    int row=-1;
 
     public BorrowersFrame() {
+
         backgroundColor = new Color(243, 241, 231);
-        mainTextColor   = new Color(55, 55, 51);
-        sidebarBgColor  = new Color(126, 93, 46);
+        mainTextColor = new Color(55, 55, 51);
+        sidebarBgColor = new Color(126, 93, 46);
 
         pagePanel = new JPanel(new BorderLayout());
         pagePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -49,10 +53,11 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(backgroundColor);
 
-        searchField  = new JTextField();
+        searchField = new JTextField();
         searchButton = new JButton();
         borrowButton = new JButton();
-        titleLabel   = new JLabel();
+        returnBookButton = new JButton();
+        titleLabel = new JLabel();
 
         // borrowButton
         {
@@ -80,6 +85,31 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             });
         }
 
+        {
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/Images/return.png"));
+            Image img = originalIcon.getImage();
+            Image newImg = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+            ImageIcon returnIcon = new ImageIcon(newImg);
+
+            returnBookButton.setPreferredSize(new Dimension(185, 35));
+            returnBookButton.setText("Return Book");
+            returnBookButton.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+            returnBookButton.setBackground(sidebarBgColor);
+            returnBookButton.setForeground(backgroundColor);
+            returnBookButton.setIcon(returnIcon);
+            returnBookButton.setHorizontalTextPosition(SwingConstants.RIGHT);
+            returnBookButton.setHorizontalAlignment(SwingConstants.LEFT);
+            returnBookButton.setIconTextGap(5);
+            returnBookButton.setFocusable(false);
+            returnBookButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            returnBookButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    pagePanel.requestFocusInWindow();
+                }
+            });
+        }
+
         // searchButton
         {
             searchButton.setText("Search");
@@ -100,7 +130,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         // searchField
         {
             searchField.setPreferredSize(new Dimension(350, 35));
-            searchField.setText("Search by borrower name");
+            searchField.setText("Search by borrower ID");
             searchField.addFocusListener(this);
             searchField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
             searchField.setBackground(backgroundColor);
@@ -109,7 +139,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             searchField.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    if (searchField.getText().equals("Search by borrower name")) {
+                    if (searchField.getText().equals("Search by borrower ID")) {
                         searchField.setText("");
                         searchField.setForeground(Color.BLACK);
                     }
@@ -148,14 +178,15 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             JPanel addPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 15));
             addPanel.setBackground(backgroundColor);
             addPanel.add(borrowButton);
+            addPanel.add(returnBookButton);
             topPanel.add(addPanel, BorderLayout.EAST);
             pagePanel.add(topPanel, BorderLayout.NORTH);
         }
 
         // tablePanel
         {
-            String[] columns = {"ID", "Name", "Email", "Phone", "Borrowed Books"};
-            tableModel    = new DefaultTableModel(columns, 0);
+            String[] columns = {"Uni ID", "Name", "Book ISBN", "Borrow Date", "Expected Return Date", "Student Status","Record Status"};
+            tableModel = new DefaultTableModel(columns, 0);
             borrowersTable = new JTable(tableModel);
             borrowersTable.setFont(new Font("Segoe UI", Font.PLAIN, 15));
             borrowersTable.setBackground(backgroundColor);
@@ -187,7 +218,17 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             borrowersTable.addMouseListener(this);
 
             // Sample row
-            tableModel.addRow(new Object[]{"B001", "Alice Johnson", "alice@example.com", "555-1234", 2});
+//            tableModel.addRow(new Object[]{"B001", "Alice Johnson", "alice@example.com", "555-1234", 2});
+
+            tableModel.setRowCount(0);
+
+            if (Main.libraryManagement.borrowers != null && Main.libraryManagement.borrowers.getRoot() != null) {
+                Main.libraryManagement.borrowers.fillTableFromTree(Main.libraryManagement.borrowers.getRoot(), tableModel);
+            }
+
+            borrowersTable.revalidate();
+            borrowersTable.repaint();
+
 
             // Center renderer for all columns
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -211,19 +252,55 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                 }
             });
 
-            for (int i = 0; i < borrowersTable.getColumnCount(); i++) {
+            for (int i = 0; i < borrowersTable.getColumnCount()-1; i++) {
                 borrowersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
+
+            borrowersTable.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer(){
+
+                {
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                }
+
+                @Override
+                public  Component getTableCellRendererComponent(JTable table,Object value,boolean isSelected,boolean isFocus,int row,int column) {
+                    Component c = super.getTableCellRendererComponent(table, value, isSelected, isFocus, row, column);
+
+                    if (value != null) {
+                        String status = value.toString();
+                        c.setFont(new Font("Segoe UI", Font.BOLD, 15));
+
+                        switch (status) {
+                            case "Active":
+                                c.setForeground(new Color(0, 166, 62));
+                                break;
+
+                            case "Returned":
+                                c.setForeground(new Color(108, 117, 125));
+                                break;
+
+                            default:
+                                c.setForeground(Color.BLACK);
+                        }
+                    }
+                    return c;
+                }
+
+            });
         }
+
+
 
         searchButton.addActionListener(this);
         borrowButton.addActionListener(this);
+        returnBookButton.addActionListener(this);
 
         this.add(pagePanel);
         this.setVisible(true);
     }
 
     public void showItemInfo(int row) {
+        this.row=row;
         if (showPanel != null) {
             pagePanel.remove(showPanel);
         }
@@ -267,50 +344,41 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         nameValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
         nameValueLabel.setBounds(115, 100, 350, 40);
 
-        // Email
-        JLabel emailLabel = new JLabel("Email : ");
-        emailLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        emailLabel.setBounds(30, 160, 350, 40);
+        // ISBN
+        JLabel ISBNLabel = new JLabel("Book ISBN : ");
+        ISBNLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        ISBNLabel.setBounds(30, 160, 350, 40);
 
-        JLabel emailValueLabel = new JLabel(borrowersTable.getValueAt(row, 2).toString());
-        emailValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        emailValueLabel.setBounds(115, 160, 350, 40);
+        JLabel ISBNValueLabel = new JLabel(borrowersTable.getValueAt(row, 2).toString());
+        ISBNValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        ISBNValueLabel.setBounds(170, 160, 350, 40);
 
-        // Phone
-        JLabel phoneLabel = new JLabel("Phone : ");
-        phoneLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        phoneLabel.setBounds(30, 220, 350, 40);
+        // Borrow Date
+        JLabel borrowDateLabel = new JLabel("Borrow Date : ");
+        borrowDateLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        borrowDateLabel.setBounds(30, 220, 350, 40);
 
-        JLabel phoneValueLabel = new JLabel(borrowersTable.getValueAt(row, 3).toString());
-        phoneValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        phoneValueLabel.setBounds(120, 220, 350, 40);
+        JLabel borrowDateValueLabel = new JLabel(borrowersTable.getValueAt(row, 3).toString());
+        borrowDateValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        borrowDateValueLabel.setBounds(195, 220, 350, 40);
 
-        // Borrowed Books
-        JLabel borrowedLabel = new JLabel("Borrowed : ");
-        borrowedLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        borrowedLabel.setBounds(30, 280, 350, 40);
+        // Return Date
+        JLabel returnDateLabel = new JLabel("Return Date : ");
+        returnDateLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        returnDateLabel.setBounds(30, 280, 350, 40);
 
-        JLabel borrowedValueLabel = new JLabel(borrowersTable.getValueAt(row, 4).toString());
-        borrowedValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        borrowedValueLabel.setBounds(170, 280, 350, 40);
+        JLabel returnDateValueLabel = new JLabel(borrowersTable.getValueAt(row, 4).toString());
+        returnDateValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        returnDateValueLabel.setBounds(190, 280, 350, 40);
 
-        // Delete button
-        ImageIcon originalDeleteIcon = new ImageIcon(getClass().getResource("/Images/delete1.png"));
-        Image imgDelete = originalDeleteIcon.getImage();
-        Image newDeleteImg = imgDelete.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        ImageIcon deleteIcon = new ImageIcon(newDeleteImg);
+        // Status
+        JLabel statusLabel = new JLabel("Student Status : ");
+        statusLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        statusLabel.setBounds(30, 340, 350, 40);
 
-        deleteButton = new JButton("Delete");
-        deleteButton.setFont(new Font("Segoe UI", Font.PLAIN, 25));
-        deleteButton.setIcon(deleteIcon);
-        deleteButton.setHorizontalTextPosition(SwingConstants.RIGHT);
-        deleteButton.setHorizontalAlignment(SwingConstants.LEFT);
-        deleteButton.setIconTextGap(5);
-        deleteButton.setBounds(30, 500, 150, 50);
-        deleteButton.setBackground(new Color(231, 0, 11));
-        deleteButton.setForeground(backgroundColor);
-        deleteButton.setFocusable(false);
-        deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JLabel statusValueLabel = new JLabel(borrowersTable.getValueAt(row, 5).toString());
+        statusValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        statusValueLabel.setBounds(220, 340, 350, 40);
 
         // Edit button
         ImageIcon originalEditIcon = new ImageIcon(getClass().getResource("/Images/edit1.png"));
@@ -324,26 +392,27 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         editButton.setHorizontalTextPosition(SwingConstants.RIGHT);
         editButton.setHorizontalAlignment(SwingConstants.LEFT);
         editButton.setIconTextGap(5);
-        editButton.setBounds(200, 500, 150, 50);
+        editButton.setBounds(120, 500, 150, 50);
         editButton.setBackground(sidebarBgColor);
         editButton.setForeground(backgroundColor);
         editButton.setFocusable(false);
         editButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        deleteButton.addActionListener(this);
         editButton.addActionListener(this);
 
         showPanel.add(idLabel);
         showPanel.add(idValueLabel);
         showPanel.add(nameLabel);
         showPanel.add(nameValueLabel);
-        showPanel.add(emailLabel);
-        showPanel.add(emailValueLabel);
-        showPanel.add(phoneLabel);
-        showPanel.add(phoneValueLabel);
-        showPanel.add(borrowedLabel);
-        showPanel.add(borrowedValueLabel);
-        showPanel.add(deleteButton);
+        showPanel.add(ISBNLabel);
+        showPanel.add(ISBNValueLabel);
+        showPanel.add(borrowDateLabel);
+        showPanel.add(borrowDateValueLabel);
+        showPanel.add(returnDateLabel);
+        showPanel.add(returnDateValueLabel);
+        showPanel.add(statusLabel);
+        showPanel.add(statusValueLabel);
+//        showPanel.add(deleteButton);
         showPanel.add(editButton);
         showPanel.add(hideButton);
 
@@ -364,7 +433,30 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
         if (e.getSource() == editButton) {
             // TODO: open EditFrame for borrowers
-            // EditFrame editFrame = new EditFrame(tableModel);
+            try {
+                int studentID = (Integer)tableModel.getValueAt(row,0);
+
+                long isbn = Long.parseLong(
+                        tableModel.getValueAt(row,2).toString()
+                );
+
+                LocalDate borrowDate = LocalDate.parse(
+                        tableModel.getValueAt(row,3).toString()
+                );
+
+                BorrowerNode borrower =
+                        Main.libraryManagement.borrowers.findBorrowRecord(
+                                Main.libraryManagement.borrowers.getRoot(),
+                                studentID,
+                                isbn,
+                                borrowDate
+                        );
+
+
+                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row,borrower);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         if (e.getSource() == hideButton) {
@@ -373,18 +465,46 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             pagePanel.repaint();
         }
 
-        if (e.getSource() == deleteButton) {
-            int row = borrowersTable.getSelectedRow();
-            if (row != -1) {
-                tableModel.removeRow(row);
-                pagePanel.remove(showPanel);
-                pagePanel.revalidate();
-                pagePanel.repaint();
-            }
-        }
-
         if (e.getSource() == searchButton) {
             // TODO: implement search/filter logic
+
+            if(searchField.getText().isEmpty() || searchField.getText().equals("Search by borrower ID")){
+                refreshTableData();
+                return;
+            }
+
+                ArrayList<BorrowerNode> searchResults = Main.libraryManagement.borrowerSearch(Integer.parseInt(searchField.getText()));
+                tableModel.setRowCount(0);
+
+                if (searchResults != null && !searchResults.isEmpty()) {
+                    for (BorrowerNode borrower : searchResults) {
+                        tableModel.addRow(new Object[]{
+//                                borrower.getId(),
+                                borrower.getStudentID(),
+                                borrower.getName(),
+                                borrower.getBookISBN(),
+                                borrower.getBorrowDate(),
+                                borrower.getReturnDate(),
+                                (borrower.isGraduate()) ? "Graduate" : "Student"
+                        });
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,"No borrower found with this ID!","Not Found!",JOptionPane.INFORMATION_MESSAGE);
+                    searchField.setText("Search by borrower ID");
+                    searchField.setForeground(Color.GRAY);
+                    refreshTableData();
+                }
+        }
+
+        if(e.getSource()==returnBookButton){
+            try {
+                ReturnBookFrame returnBookFrame = new ReturnBookFrame(tableModel);
+                refreshTableData();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 
@@ -405,15 +525,23 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         pagePanel.requestFocusInWindow();
     }
 
-    @Override public void mouseReleased(MouseEvent e) {}
-    @Override public void mouseEntered(MouseEvent e)  {}
-    @Override public void mouseExited(MouseEvent e)   {}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 
     // ── FocusListener ──────────────────────────────────────────────────────
 
     @Override
     public void focusGained(FocusEvent e) {
-        if (searchField.getText().equals("Search by borrower name")) {
+        if (searchField.getText().equals("Search by borrower ID")) {
             searchField.setText("");
             searchField.setForeground(Color.BLACK);
         }
@@ -423,7 +551,20 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     public void focusLost(FocusEvent e) {
         if (searchField.getText().isEmpty()) {
             searchField.setForeground(Color.GRAY);
-            searchField.setText("Search by borrower name");
+            searchField.setText("Search by borrower ID");
         }
     }
+
+    public void refreshTableData() {
+        if (tableModel != null) {
+            tableModel.setRowCount(0);
+
+            if (Main.libraryManagement != null && Main.libraryManagement.borrowers != null && Main.libraryManagement.borrowers.getRoot() != null) {
+                Main.libraryManagement.borrowers.fillTableFromTree(Main.libraryManagement.borrowers.getRoot(), tableModel);
+            }
+            borrowersTable.revalidate();
+            borrowersTable.repaint();
+        }
+    }
+
 }

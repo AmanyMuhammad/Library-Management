@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 
 public class BorrowerNode {
+    private int studentID;
+    private static int idCounter=0;
     private int id;
     private String name;
     private long BookISBN;
@@ -14,8 +16,9 @@ public class BorrowerNode {
     BorrowerNode left;
     BorrowerNode right;
 
-    public BorrowerNode(int id, String name, long BookISBN, LocalDate borrowDate, boolean isGraduate){
-        this.id=id;
+    public BorrowerNode(int studentID, String name, long BookISBN, LocalDate borrowDate, boolean isGraduate){
+        this.studentID = studentID;
+        this.id=idCounter++;
         this.name=name;
         this.BookISBN = BookISBN;
         this.borrowDate=borrowDate;
@@ -30,6 +33,14 @@ public class BorrowerNode {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
     }
 
     public String getName() {

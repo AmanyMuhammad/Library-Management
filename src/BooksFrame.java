@@ -31,6 +31,7 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
     Color sidebarBgColor;
 
     public BooksFrame(){
+
             backgroundColor =new Color(243, 241, 231);
             mainTextColor =new Color(55, 55, 51);
             sidebarBgColor =new Color(126, 93, 46);
@@ -269,7 +270,7 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
 
         }
 
-        public void showItemInfo(int row){
+    public void showItemInfo(int row){
             if(showPanel!=null){
                 pagePanel.remove(showPanel);
             }
