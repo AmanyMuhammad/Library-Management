@@ -18,6 +18,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
     ImageIcon brownBookIcon;
     ImageIcon brownBorrowerIcon;
     ImageIcon brownWaitingListIcon;
+    JButton reportShowButton;
 
     public LibraryFrame(JPanel pagePanel){
         backgroundColor =new Color(243, 241, 231);
@@ -109,6 +110,16 @@ public class LibraryFrame extends JFrame implements ActionListener {
         waitingListsShowButton.addActionListener(this);
         waitingListsShowButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        reportShowButton = new JButton("Show Report");
+        reportShowButton.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        reportShowButton.setBackground(sidebarBgColor);
+        reportShowButton.setForeground(backgroundColor);
+        reportShowButton.setBounds(-10, 700, 270, 40);
+        reportShowButton.setFocusable(false);
+        reportShowButton.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        reportShowButton.addActionListener(this);
+        reportShowButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         menuPanel=new JPanel();
         menuPanel.setLayout(null);
         menuPanel.setBackground(sidebarBgColor);
@@ -119,6 +130,7 @@ public class LibraryFrame extends JFrame implements ActionListener {
         menuPanel.add(booksShowButton);
         menuPanel.add(borrowersShowButton);
         menuPanel.add(waitingListsShowButton);
+        menuPanel.add(reportShowButton);
         this.add(menuPanel,BorderLayout.WEST);
         this.add(pagePanel, BorderLayout.CENTER);
         this.setVisible(true);
@@ -190,7 +202,6 @@ public class LibraryFrame extends JFrame implements ActionListener {
                 contentPane.revalidate();
                 contentPane.repaint();
             }
-            //this.add(new BooksFrame().pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==borrowersShowButton){
@@ -215,8 +226,6 @@ public class LibraryFrame extends JFrame implements ActionListener {
                 contentPane.revalidate();
                 contentPane.repaint();
             }
-
-            //this.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
         }
 
         if(e.getSource()==waitingListsShowButton){
@@ -229,6 +238,9 @@ public class LibraryFrame extends JFrame implements ActionListener {
             resetButtonState(borrowersShowButton, new ImageIcon(getClass().getResource("/Images/borrower.png")));
         }
 
+        if (e.getSource() == reportShowButton) {
+            new ReportFrame(this);
+        }
     }
 
     private void resetButtonState(JButton button, ImageIcon originalWhiteIcon) {
