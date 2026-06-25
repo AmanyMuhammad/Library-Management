@@ -21,12 +21,9 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
     DefaultTableModel tableModel;
     int id;
     int row;
-    LibraryManagement libraryManagement;
 
 
-
-    EditBorrowerInfo(DefaultTableModel tableModel,LibraryManagement libraryManagement,int row) throws IOException {
-        this.libraryManagement=libraryManagement;
+    EditBorrowerInfo(DefaultTableModel tableModel,int row) throws IOException {
         this.row=row;
         Color mainTextColor=new Color(55, 55, 51);
         Color backgroundColor =new Color(243, 241, 231);
@@ -166,16 +163,16 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == editButton) {
-            String Edit = libraryManagement.updateBorrowerInfo(Integer.parseInt(UniIDField.getText()), nameField.getText(), LocalDate.parse(borrowDateField.getText()));
+            String Edit = Main.libraryManagement.updateBorrowerInfo(Integer.parseInt(UniIDField.getText()), nameField.getText(), LocalDate.parse(borrowDateField.getText()));
 
             if (Edit.equals("The borrower info updated successfully!")) {
 
-                if (libraryManagement.borrowersFrame != null) {
-                    libraryManagement.borrowersFrame.refreshTableData();
-                    if (this.row >= 0 && this.row < libraryManagement.borrowersFrame.borrowersTable.getRowCount()) {
-                        libraryManagement.borrowersFrame.borrowersTable.setRowSelectionInterval(this.row, this.row);
+                if (Main.libraryManagement.borrowersFrame != null) {
+                    Main.libraryManagement.borrowersFrame.refreshTableData();
+                    if (this.row >= 0 && this.row < Main.libraryManagement.borrowersFrame.borrowersTable.getRowCount()) {
+                        Main.libraryManagement.borrowersFrame.borrowersTable.setRowSelectionInterval(this.row, this.row);
 
-                        libraryManagement.borrowersFrame.showItemInfo(this.row);
+                        Main.libraryManagement.borrowersFrame.showItemInfo(this.row);
                     }
 
                 }

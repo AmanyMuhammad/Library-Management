@@ -23,11 +23,9 @@ public class BorrowFrame extends JFrame implements ActionListener {
     int id;
     int row;
     boolean graduated=false;
-    LibraryManagement libraryManagement;
 
+    BorrowFrame(DefaultTableModel tableModel) throws IOException {
 
-    BorrowFrame(DefaultTableModel tableModel,LibraryManagement libraryManagement) throws IOException {
-        this.libraryManagement=libraryManagement;
         Color mainTextColor=new Color(55, 55, 51);
         Color backgroundColor =new Color(243, 241, 231);
         Color sidebarBgColor =new Color(126, 93, 46);
@@ -180,7 +178,7 @@ public class BorrowFrame extends JFrame implements ActionListener {
             }
 
 
-            String Add=libraryManagement.addBorrower(Integer.parseInt(uniIDField.getText()),borrowerNameField.getText(),Long.parseLong(bookISBNField.getText()), LocalDate.parse(borrowDateField.getText()),graduated);
+            String Add=Main.libraryManagement.addBorrower(Integer.parseInt(uniIDField.getText()),borrowerNameField.getText(),Long.parseLong(bookISBNField.getText()), LocalDate.parse(borrowDateField.getText()),graduated);
             if(Add.equals("The book is not exist!")){
                 JOptionPane.showMessageDialog(this,"The book is not exist!","Warning",JOptionPane.WARNING_MESSAGE);
             }

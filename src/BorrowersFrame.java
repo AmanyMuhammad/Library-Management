@@ -5,6 +5,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BorrowersFrame extends JPanel implements ActionListener, MouseListener, FocusListener {
 
@@ -18,6 +19,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     JTextField searchField;
     JButton searchButton;
     JButton borrowButton;
+    JButton returnBookButton;
     JButton editButton;
     JButton deleteButton;
     JButton hideButton;
@@ -54,6 +56,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         searchField = new JTextField();
         searchButton = new JButton();
         borrowButton = new JButton();
+        returnBookButton = new JButton();
         titleLabel = new JLabel();
 
         // borrowButton
@@ -82,6 +85,31 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             });
         }
 
+        {
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/Images/return.png"));
+            Image img = originalIcon.getImage();
+            Image newImg = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+            ImageIcon returnIcon = new ImageIcon(newImg);
+
+            returnBookButton.setPreferredSize(new Dimension(185, 35));
+            returnBookButton.setText("Return Book");
+            returnBookButton.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+            returnBookButton.setBackground(sidebarBgColor);
+            returnBookButton.setForeground(backgroundColor);
+            returnBookButton.setIcon(returnIcon);
+            returnBookButton.setHorizontalTextPosition(SwingConstants.RIGHT);
+            returnBookButton.setHorizontalAlignment(SwingConstants.LEFT);
+            returnBookButton.setIconTextGap(5);
+            returnBookButton.setFocusable(false);
+            returnBookButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            returnBookButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    pagePanel.requestFocusInWindow();
+                }
+            });
+        }
+
         // searchButton
         {
             searchButton.setText("Search");
@@ -102,7 +130,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         // searchField
         {
             searchField.setPreferredSize(new Dimension(350, 35));
-            searchField.setText("Search by borrower name");
+            searchField.setText("Search by borrower ID");
             searchField.addFocusListener(this);
             searchField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
             searchField.setBackground(backgroundColor);
@@ -111,7 +139,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             searchField.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    if (searchField.getText().equals("Search by borrower name")) {
+                    if (searchField.getText().equals("Search by borrower ID")) {
                         searchField.setText("");
                         searchField.setForeground(Color.BLACK);
                     }
@@ -150,6 +178,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             JPanel addPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 15));
             addPanel.setBackground(backgroundColor);
             addPanel.add(borrowButton);
+            addPanel.add(returnBookButton);
             topPanel.add(addPanel, BorderLayout.EAST);
             pagePanel.add(topPanel, BorderLayout.NORTH);
         }
@@ -230,6 +259,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
         searchButton.addActionListener(this);
         borrowButton.addActionListener(this);
+        returnBookButton.addActionListener(this);
 
         this.add(pagePanel);
         this.setVisible(true);
@@ -389,7 +419,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == borrowButton) {
             try {
-                BorrowFrame borrowFrame = new BorrowFrame(tableModel, Main.libraryManagement);
+                BorrowFrame borrowFrame = new BorrowFrame(tableModel);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -398,7 +428,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         if (e.getSource() == editButton) {
             // TODO: open EditFrame for borrowers
             try {
-                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel, Main.libraryManagement,row);
+                EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -422,6 +452,42 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
         if (e.getSource() == searchButton) {
             // TODO: implement search/filter logic
+
+            if(searchField.getText().isEmpty() || searchField.getText().equals("Search by borrower ID")){
+                refreshTableData();
+                return;
+            }
+
+                ArrayList<BorrowerNode> searchResults = Main.libraryManagement.borrowerSearch(Integer.parseInt(searchField.getText()));
+                tableModel.setRowCount(0);
+
+                if (searchResults != null && !searchResults.isEmpty()) {
+                    for (BorrowerNode borrower : searchResults) {
+                        tableModel.addRow(new Object[]{
+                                borrower.getId(),
+                                borrower.getName(),
+                                borrower.getBookISBN(),
+                                borrower.getBorrowDate(),
+                                borrower.getReturnDate(),
+                                (borrower.isGraduate()) ? "Graduate" : "Student"
+                        });
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,"No borrower found with this ID!","Not Found!",JOptionPane.INFORMATION_MESSAGE);
+                    searchField.setText("Search by borrower ID");
+                    searchField.setForeground(Color.GRAY);
+                    refreshTableData();
+                }
+        }
+
+        if(e.getSource()==returnBookButton){
+            try {
+                ReturnBookFrame returnBookFrame = new ReturnBookFrame(tableModel);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 
@@ -458,7 +524,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
     @Override
     public void focusGained(FocusEvent e) {
-        if (searchField.getText().equals("Search by borrower name")) {
+        if (searchField.getText().equals("Search by borrower ID")) {
             searchField.setText("");
             searchField.setForeground(Color.BLACK);
         }
@@ -468,7 +534,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
     public void focusLost(FocusEvent e) {
         if (searchField.getText().isEmpty()) {
             searchField.setForeground(Color.GRAY);
-            searchField.setText("Search by borrower name");
+            searchField.setText("Search by borrower ID");
         }
     }
 
