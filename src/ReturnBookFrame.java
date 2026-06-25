@@ -173,6 +173,18 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
         if(e.getSource() == returnButton){
 
             String Return=Main.libraryManagement.returnBook(Integer.parseInt(uniIDField.getText()),Long.parseLong(bookISBNField.getText()));
+            BorrowerNode root= Main.libraryManagement.borrowers.getRoot();
+//            Main.libraryManagement.borrowers.find(root,Integer.parseInt(uniIDField.getText())).setRecordStatus("Returned");
+
+            BorrowerNode borrowerNode=Main.libraryManagement.borrowers.find(root,Integer.parseInt(uniIDField.getText()));
+            for (int i = 0; i <  Main.libraryManagement.borrowersFrame.borrowersTable.getRowCount(); i++) {
+                if(tableModel.getValueAt(i,0).equals(borrowerNode.getId())){
+                    tableModel.setValueAt(borrowerNode.getRecordStatus(),i,6);
+                    break;
+                }
+
+            }
+
 
             if(Return.equals("The book returned successfully and processed waiting list!")){
                 JOptionPane.showMessageDialog(this,"The book returned successfully and processed waiting list!","Success",JOptionPane.INFORMATION_MESSAGE);

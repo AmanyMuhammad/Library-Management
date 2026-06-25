@@ -107,7 +107,8 @@ public class BorrowTree {
                 root.getBookISBN(),
                 root.getBorrowDate(),
                 root.getReturnDate(),
-                (root.isGraduate()?"Graduate":"Student")
+                (root.isGraduate()?"Graduate":"Student"),
+                root.getRecordStatus()
         });
 
         fillTableFromTree(root.left,tableModel);

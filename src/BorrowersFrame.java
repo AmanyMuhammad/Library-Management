@@ -185,7 +185,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
 
         // tablePanel
         {
-            String[] columns = {"Uni ID", "Name", "Book ISBN", "Borrow Date", "Expected Return Date", "Student Status"};
+            String[] columns = {"Uni ID", "Name", "Book ISBN", "Borrow Date", "Expected Return Date", "Student Status","Record Status"};
             tableModel = new DefaultTableModel(columns, 0);
             borrowersTable = new JTable(tableModel);
             borrowersTable.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -252,10 +252,44 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                 }
             });
 
-            for (int i = 0; i < borrowersTable.getColumnCount(); i++) {
+            for (int i = 0; i < borrowersTable.getColumnCount()-1; i++) {
                 borrowersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
+
+            borrowersTable.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer(){
+
+                {
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                }
+
+                @Override
+                public  Component getTableCellRendererComponent(JTable table,Object value,boolean isSelected,boolean isFocus,int row,int column) {
+                    Component c = super.getTableCellRendererComponent(table, value, isSelected, isFocus, row, column);
+
+                    String status = value.toString();
+                    c.setFont(new Font("Segoe UI", Font.BOLD, 15));
+
+                    switch (status) {
+                        case "Active":
+                            c.setForeground(new Color(0, 166, 62));
+                            break;
+
+                        case "Returned":
+                            c.setForeground(new Color(108, 117, 125));
+                            break;
+
+                        default:
+                            c.setForeground(Color.BLACK);
+                    }
+
+                    return c;
+
+                }
+
+            });
         }
+
+
 
         searchButton.addActionListener(this);
         borrowButton.addActionListener(this);
@@ -484,6 +518,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         if(e.getSource()==returnBookButton){
             try {
                 ReturnBookFrame returnBookFrame = new ReturnBookFrame(tableModel);
+                refreshTableData();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
