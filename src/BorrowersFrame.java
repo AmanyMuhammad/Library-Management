@@ -271,11 +271,11 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                         c.setFont(new Font("Segoe UI", Font.BOLD, 15));
 
                         switch (status) {
-                            case "Active":
+                            case "ACTIVE":
                                 c.setForeground(new Color(0, 166, 62));
                                 break;
 
-                            case "Returned":
+                            case "RETURNED":
                                 c.setForeground(new Color(108, 117, 125));
                                 break;
 
@@ -436,11 +436,23 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             try {
                 int studentID = (Integer)tableModel.getValueAt(row,0);
 
-                long isbn = Long.parseLong(tableModel.getValueAt(row,2).toString());
+                long isbn = Long.parseLong(
+                        tableModel.getValueAt(row,2).toString()
+                );
 
-                LocalDate borrowDate = LocalDate.parse(tableModel.getValueAt(row,3).toString());
+                LocalDate borrowDate = LocalDate.parse(
+                        tableModel.getValueAt(row,3).toString()
+                );
 
-                BorrowerNode borrower = Main.libraryManagement.borrowers.findBorrowRecord(Main.libraryManagement.borrowers.getRoot(), studentID, isbn, borrowDate);
+                BorrowerNode borrower =
+                        Main.libraryManagement.borrowers.findBorrowRecord(
+                                Main.libraryManagement.borrowers.getRoot(),
+                                studentID,
+                                isbn,
+                                borrowDate
+                        );
+
+
                 EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row,borrower);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -461,28 +473,28 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                 return;
             }
 
-                ArrayList<BorrowerNode> searchResults = Main.libraryManagement.borrowerSearch(Integer.parseInt(searchField.getText()));
-                tableModel.setRowCount(0);
+            ArrayList<BorrowerNode> searchResults = Main.libraryManagement.borrowerSearch(Integer.parseInt(searchField.getText()));
+            tableModel.setRowCount(0);
 
-                if (searchResults != null && !searchResults.isEmpty()) {
-                    for (BorrowerNode borrower : searchResults) {
-                        tableModel.addRow(new Object[]{
+            if (searchResults != null && !searchResults.isEmpty()) {
+                for (BorrowerNode borrower : searchResults) {
+                    tableModel.addRow(new Object[]{
 //                                borrower.getId(),
-                                borrower.getStudentID(),
-                                borrower.getName(),
-                                borrower.getBookISBN(),
-                                borrower.getBorrowDate(),
-                                borrower.getReturnDate(),
-                                (borrower.isGraduate()) ? "Graduate" : "Student"
-                        });
-                    }
+                            borrower.getStudentID(),
+                            borrower.getName(),
+                            borrower.getBookISBN(),
+                            borrower.getBorrowDate(),
+                            borrower.getReturnDate(),
+                            (borrower.isGraduate()) ? "Graduate" : "Student"
+                    });
                 }
-                else{
-                    JOptionPane.showMessageDialog(this,"No borrower found with this ID!","Not Found!",JOptionPane.INFORMATION_MESSAGE);
-                    searchField.setText("Search by borrower ID");
-                    searchField.setForeground(Color.GRAY);
-                    refreshTableData();
-                }
+            }
+            else{
+                JOptionPane.showMessageDialog(this,"No borrower found with this ID!","Not Found!",JOptionPane.INFORMATION_MESSAGE);
+                searchField.setText("Search by borrower ID");
+                searchField.setForeground(Color.GRAY);
+                refreshTableData();
+            }
         }
 
         if(e.getSource()==returnBookButton){
@@ -554,5 +566,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             borrowersTable.repaint();
         }
     }
+
+
 
 }

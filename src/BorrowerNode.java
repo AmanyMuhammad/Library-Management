@@ -24,7 +24,7 @@ public class BorrowerNode {
         this.borrowDate=borrowDate;
         this.returnDate=borrowDate.plusDays(20);
         this.isGraduate=isGraduate;
-        this.recordStatus="Active";
+        this.recordStatus="ACTIVE";
     }
 
     public int getId() {

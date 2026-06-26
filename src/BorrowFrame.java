@@ -173,8 +173,13 @@ public class BorrowFrame extends JFrame implements ActionListener {
                 graduated=true;
             }
 
+            String Add = Main.libraryManagement.addBorrower(
+                    Integer.parseInt(uniIDField.getText()),
+                    borrowerNameField.getText(),
+                    Long.parseLong(bookISBNField.getText()),
+                    LocalDate.parse(borrowDateField.getText()),
+                    graduated);
 
-            String Add=Main.libraryManagement.addBorrower(Integer.parseInt(uniIDField.getText()),borrowerNameField.getText(),Long.parseLong(bookISBNField.getText()), LocalDate.parse(borrowDateField.getText()),graduated);
             if(Add.equals("The book is not exist!")){
                 JOptionPane.showMessageDialog(this,"The book is not exist!","Warning",JOptionPane.WARNING_MESSAGE);
             }
@@ -187,23 +192,11 @@ public class BorrowFrame extends JFrame implements ActionListener {
                 this.dispose();
             }
             else if(Add.equals("The borrow was successful!")){
-                LocalDate returnDate=LocalDate.parse(borrowDateField.getText()).plusDays(20);
-                tableModel.addRow(new Object[]{
-
-                        Integer.parseInt(uniIDField.getText().trim()),
-                        borrowerNameField.getText().trim(),
-                        Long.parseLong(bookISBNField.getText().trim()),
-                        LocalDate.parse(borrowDateField.getText().trim()),
-                        returnDate,
-                        (graduated ? "Graduate" : "Student"),
-                        "Active"
-                });
+                Main.libraryManagement.borrowersFrame.refreshTableData();
 
                 JOptionPane.showMessageDialog(this,"The borrow was successful!","Success",JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
             }
-
-
         }
     }
 
