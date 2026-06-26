@@ -56,23 +56,16 @@ public class BorrowTree {
 
     }
 
-    public BorrowerNode findBorrowRecord(
-            BorrowerNode root,
-            int studentID,
-            long isbn,
-            LocalDate borrowDate){
+    public BorrowerNode findBorrowRecord(BorrowerNode root, int studentID, long isbn, LocalDate borrowDate){
 
         if(root == null)
             return null;
 
-        if(root.getStudentID() == studentID
-                && root.getBookISBN() == isbn
-                && root.getBorrowDate().equals(borrowDate)){
+        if(root.getStudentID() == studentID && root.getBookISBN() == isbn && root.getBorrowDate().equals(borrowDate)){
             return root;
         }
 
-        BorrowerNode found =
-                findBorrowRecord(root.left, studentID, isbn, borrowDate);
+        BorrowerNode found = findBorrowRecord(root.left, studentID, isbn, borrowDate);
 
         if(found != null)
             return found;
@@ -80,21 +73,21 @@ public class BorrowTree {
         return findBorrowRecord(root.right, studentID, isbn, borrowDate);
     }
 
-    public BorrowerNode findById(BorrowerNode root, int id) {
-        if (root == null)
-            return null;
-
-        if (root.getId() == id) {
-            System.out.println("findById : " + root.getId());
-            return root;
-        }
-
-        BorrowerNode leftResult = findById(root.left, id);
-        if (leftResult != null)
-            return leftResult;
-
-        return findById(root.right, id);
-    }
+//    public BorrowerNode findById(BorrowerNode root, int id) {
+//        if (root == null)
+//            return null;
+//
+//        if (root.getId() == id) {
+//            System.out.println("findById : " + root.getId());
+//            return root;
+//        }
+//
+//        BorrowerNode leftResult = findById(root.left, id);
+//        if (leftResult != null)
+//            return leftResult;
+//
+//        return findById(root.right, id);
+//    }
 
     public int countCurrentBorrowsNum(BorrowerNode root,int studentID){
         if(root==null)

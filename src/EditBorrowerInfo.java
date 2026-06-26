@@ -35,19 +35,15 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
         this.setLayout(new BorderLayout());
 
 
-        BorrowerNode root = Main.libraryManagement.borrowers.getRoot();
+//        BorrowerNode root = Main.libraryManagement.borrowers.getRoot();
 
-        id = (Integer) tableModel.getValueAt(row, 0);
+//        id = (Integer) tableModel.getValueAt(row, 0);
 
-        editedBorrower = Main.libraryManagement.borrowers.findById(Main.libraryManagement.borrowers.getRoot(), editedBorrower.getId());
+//        editedBorrower = Main.libraryManagement.borrowers.findById(Main.libraryManagement.borrowers.getRoot(), editedBorrower.getId());
 
 
         if (editedBorrower == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Borrower not found!",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Borrower not found!", "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
             return;
         }

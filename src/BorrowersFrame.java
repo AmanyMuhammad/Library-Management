@@ -436,23 +436,11 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             try {
                 int studentID = (Integer)tableModel.getValueAt(row,0);
 
-                long isbn = Long.parseLong(
-                        tableModel.getValueAt(row,2).toString()
-                );
+                long isbn = Long.parseLong(tableModel.getValueAt(row,2).toString());
 
-                LocalDate borrowDate = LocalDate.parse(
-                        tableModel.getValueAt(row,3).toString()
-                );
+                LocalDate borrowDate = LocalDate.parse(tableModel.getValueAt(row,3).toString());
 
-                BorrowerNode borrower =
-                        Main.libraryManagement.borrowers.findBorrowRecord(
-                                Main.libraryManagement.borrowers.getRoot(),
-                                studentID,
-                                isbn,
-                                borrowDate
-                        );
-
-
+                BorrowerNode borrower = Main.libraryManagement.borrowers.findBorrowRecord(Main.libraryManagement.borrowers.getRoot(), studentID, isbn, borrowDate);
                 EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row,borrower);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
