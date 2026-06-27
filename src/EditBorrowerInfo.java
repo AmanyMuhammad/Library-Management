@@ -155,7 +155,7 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == editButton) {
-            String Edit = Main.libraryManagement.updateBorrowerInfo(editedBorrower.getStudentID(), nameField.getText(), LocalDate.parse(borrowDateField.getText().trim()));
+            String Edit = Main.libraryManagement.updateBorrowerInfo(editedBorrower.getId(), nameField.getText(), LocalDate.parse(borrowDateField.getText().trim()));
 
 
             if (Edit.equals("The borrower info updated successfully!")) {
