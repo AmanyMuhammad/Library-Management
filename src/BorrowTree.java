@@ -87,29 +87,27 @@ public class BorrowTree {
         return updateBorrower(this.root,id,newName,newBorrowDate);
     }
 
-    public boolean updateBorrower(BorrowerNode borrower, int id, String newName,LocalDate newBorrowDate){
-        if(borrower==null)
+    public boolean updateBorrower(BorrowerNode borrower, int studentID, String newName, LocalDate newBorrowDate) {
+        if (borrower == null)
             return false;
 
-        boolean isUpdated=false;
+        if (studentID < borrower.getStudentID())
+            return updateBorrower(borrower.left, studentID, newName, newBorrowDate);
 
-        if (borrower.getId()==id){
-            if (newName!=null && !newName.equals(borrower.getName())){
+        if (studentID > borrower.getStudentID())
+            return updateBorrower(borrower.right, studentID, newName, newBorrowDate);
+
+        if (studentID==borrower.getStudentID()){
+            if (newName!=null && !newName.equals(borrower.getName()))
                 borrower.setName(newName);
-            }
-
-            if (newBorrowDate!=null && !borrower.getBorrowDate().equals(newBorrowDate) && borrower.getRecordStatus().equalsIgnoreCase("ACTIVE")){
-                borrower.setBorrowDate(newBorrowDate);
-                borrower.setReturnDate(newBorrowDate.plusDays(20));
-            }
-
-            isUpdated=true;
         }
 
-        boolean leftUpdated=updateBorrower(borrower.left,id,newName,newBorrowDate);
-        boolean rightUpdated=updateBorrower(borrower.right,id,newName,newBorrowDate);
+        if (newBorrowDate!=null && !borrower.getBorrowDate().equals(newBorrowDate) && borrower.getRecordStatus().equalsIgnoreCase("ACTIVE")) {
+            borrower.setBorrowDate(newBorrowDate);
+            borrower.setReturnDate(newBorrowDate.plusDays(20));
+        }
 
-        return isUpdated || leftUpdated || rightUpdated;
+        return true;
     }
 
     public void fillTableFromTree(BorrowerNode root, DefaultTableModel tableModel){
