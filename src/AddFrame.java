@@ -14,10 +14,7 @@ public class AddFrame extends JFrame implements ActionListener {
     JTextField authorField;
     JTextField copiesNumField;
     JButton addButton;
-    JButton editButton;
     DefaultTableModel tableModel;
-    int id;
-    int row;
     BooksFrame booksFrame;
 
 

@@ -18,7 +18,6 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
     JTextField borrowDateField;
     JButton editButton;
     DefaultTableModel tableModel;
-    int id;
     int row;
     BorrowerNode editedBorrower;
 
@@ -33,14 +32,6 @@ public class EditBorrowerInfo extends JFrame implements ActionListener {
         this.tableModel=tableModel;
         this.setSize(new Dimension(650, 600));
         this.setLayout(new BorderLayout());
-
-
-//        BorrowerNode root = Main.libraryManagement.borrowers.getRoot();
-//
-//        id = (Integer) tableModel.getValueAt(row, 0);
-//
-//        editedBorrower = Main.libraryManagement.borrowers.findById(Main.libraryManagement.borrowers.getRoot(), editedBorrower.getId());
-
 
         if (editedBorrower == null) {
             JOptionPane.showMessageDialog(this,

@@ -12,16 +12,12 @@ public class EditFrame extends JFrame implements ActionListener {
     JPanel headerPanel;
     JPanel addPagePanel;
     JLabel addLabel;
-    //JTextField ISBNField;
-    JLabel ISBNLabel;
     JTextField titleField;
     JTextField authorField;
     JTextField copiesNumField;
     JButton editButton;
     DefaultTableModel tableModel;
     long isbn;
-    int id;
-    int row;
     BooksFrame booksFrame;
 
     EditFrame(DefaultTableModel tableModel, long isbn, BooksFrame booksFrame) throws IOException {
@@ -75,18 +71,9 @@ public class EditFrame extends JFrame implements ActionListener {
 
         //  ISBNField
         gbc.gridx = 0;
-        //ISBNField = new JTextField("ISBN");
-        //ISBNField.setPreferredSize(new Dimension(260, 42));
-        //ISBNField.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
-        //ISBNField.setBackground(backgroundColor);
-        //ISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-        //ISBNField.setEditable(true);
-        //addPagePanel.add(ISBNField, gbc);
         ISBNLabel = new JLabel(String.valueOf(this.isbn));
         ISBNLabel.setPreferredSize(new Dimension(260, 42));
         ISBNLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 20));
-        //ISBNLabel.setBackground(backgroundColor);
-        //ISBNLabel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
         addPagePanel.add(ISBNLabel, gbc);
 
         //  titleField
@@ -156,7 +143,6 @@ public class EditFrame extends JFrame implements ActionListener {
         addPagePanel.add(editButton, gbc);
 
 
-        //activeField(ISBNField,ISBNField.getText());
         activeField(titleField, titleField.getText());
         activeField(authorField,authorField.getText());
         activeField(copiesNumField,copiesNumField.getText());

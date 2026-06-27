@@ -13,16 +13,8 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
     JLabel returnLabel;
     JTextField uniIDField;
     JTextField bookISBNField;
-    //    JTextField borrowerNameField;
-//    JTextField borrowDateField;
-//    JTextField expectedReturnDateField;
     JButton returnButton;
-    //    JButton editButton;
-//    JCheckBox graduateCheckBox;
     DefaultTableModel tableModel;
-//    int id;
-//    int row;
-//    boolean graduated=false;
 
 
     ReturnBookFrame(DefaultTableModel tableModel) throws IOException {
@@ -55,25 +47,17 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
 
-        //ISBN Label
+        //ID Label
         gbc.gridx = 0;
         JLabel IDLabel = new JLabel("Uni ID");
         IDLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
         IDLabel.setForeground(sidebarBgColor);
         returnPagePanel.add(IDLabel, gbc);
 
-        // Borrower's Name Label
-//        gbc.gridx = 1;
-//        JLabel nameLabel = new JLabel("Borrower's Name");
-//        nameLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-//        nameLabel.setForeground(sidebarBgColor);
-//        returnPagePanel.add(nameLabel, gbc);
-
-
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        //  ISBNField
+        //  IDField
         gbc.gridx = 0;
         uniIDField = new JTextField("Uni ID");
         uniIDField.setPreferredSize(new Dimension(260, 42));
@@ -83,38 +67,20 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
         uniIDField.setEditable(true);
         returnPagePanel.add(uniIDField, gbc);
 
-        //  Borrower's Name Field
-//        gbc.gridx = 1;
-//        borrowerNameField = new JTextField("Borrower's Name");
-//        borrowerNameField.setPreferredSize(new Dimension(260, 42));
-//        borrowerNameField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
-//        borrowerNameField.setBackground(backgroundColor);
-//        borrowerNameField.setForeground(Color.LIGHT_GRAY);
-//        borrowerNameField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-//        returnPagePanel.add(borrowerNameField, gbc);
-
-
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
 
-        //Borrow Date Label
+        //ISBN Label
         gbc.gridx = 0;
         JLabel ISBNLabel = new JLabel("Book ISBN");
         ISBNLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
         ISBNLabel.setForeground(sidebarBgColor);
         returnPagePanel.add(ISBNLabel, gbc);
-//
-//        //Expected Return Date Label
-//        gbc.gridx = 1;
-//        JLabel borrowDateLabel = new JLabel("Borrow Date");
-//        borrowDateLabel.setFont(new Font("Segoe_UI", Font.PLAIN, 24));
-//        borrowDateLabel.setForeground(sidebarBgColor);
-//        returnPagePanel.add(borrowDateLabel, gbc);
 
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        //  Borrow Date Field
+        //  ISBN Field
         gbc.gridx = 0;
         bookISBNField = new JTextField("Book ISBN");
         bookISBNField.setPreferredSize(new Dimension(260, 42));
@@ -122,24 +88,6 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
         bookISBNField.setBackground(backgroundColor);
         bookISBNField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
         returnPagePanel.add(bookISBNField, gbc);
-
-        //  Expected Return Date Field
-//        gbc.gridx = 1;
-//        borrowDateField = new JTextField("Borrow Date");
-//        borrowDateField.setPreferredSize(new Dimension(260, 42));
-//        borrowDateField.setFont(new Font("Segoe_UI", Font.PLAIN, 18));
-//        borrowDateField.setBackground(backgroundColor);
-//        borrowDateField.setBorder(BorderFactory.createMatteBorder(1,1,1,1,mainTextColor));
-//        returnPagePanel.add(borrowDateField, gbc);
-//
-//        gbc.gridx=0;
-//        gbc.gridy=4;
-//        gbc.anchor = GridBagConstraints.EAST;
-//        gbc.insets = new Insets(-5, -60, 50, 180);
-//
-//        graduateCheckBox=new JCheckBox("Is Graduate?");
-//        graduateCheckBox.setBackground(backgroundColor);
-//        returnPagePanel.add(graduateCheckBox,gbc);
 
         gbc.gridy = 4;
         gbc.gridx = 0;
@@ -159,8 +107,6 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
 
         activeField(uniIDField, uniIDField.getText());
         activeField(bookISBNField, bookISBNField.getText());
-//        activeField(borrowerNameField, borrowerNameField.getText());
-//        activeField(borrowDateField, borrowDateField.getText());
 
 
         this.add(headerPanel,BorderLayout.NORTH);
@@ -174,7 +120,6 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
         if(e.getSource() == returnButton){
 
             String Return=Main.libraryManagement.returnBook(Integer.parseInt(uniIDField.getText()),Long.parseLong(bookISBNField.getText()));
-            //BorrowerNode root= Main.libraryManagement.borrowers.getRoot();
             Main.libraryManagement.waitingListFrame.refreshTableData();
             Main.libraryManagement.borrowersFrame.refreshTableData();
 
@@ -183,12 +128,12 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
             long returnedISBN = Long.parseLong(bookISBNField.getText());
 
             for (BorrowerNode record : records) {
-                if (record.getBookISBN() == returnedISBN && record.getRecordStatus().equals("Returned")) {
+                if (record.getBookISBN() == returnedISBN && record.getRecordStatus().equals("RETURNED")) {
                     for (int i = 0; i < tableModel.getRowCount(); i++) {
                         if (tableModel.getValueAt(i, 0).equals(record.getStudentID())
                                 && tableModel.getValueAt(i, 2).equals(record.getBookISBN())
                                 && tableModel.getValueAt(i, 3).toString().equals(record.getBorrowDate().toString())) {
-                            tableModel.setValueAt("Returned", i, 6);
+                            tableModel.setValueAt("RETURNED", i, 6);
                             break;
                         }
                     }
@@ -206,39 +151,6 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,"Error: No active borrow record found for this student and book!!","Warning",JOptionPane.WARNING_MESSAGE);
                 this.dispose();
             }
-
-
-
-//            if (graduateCheckBox.isSelected()){
-//                graduated=true;
-//            }
-//
-//
-//            String Add=Main.libraryManagement.addBorrower(Integer.parseInt(uniIDField.getText()),borrowerNameField.getText(),Long.parseLong(bookISBNField.getText()), LocalDate.parse(borrowDateField.getText()),graduated);
-//            if(Add.equals("The book is not exist!")){
-//                JOptionPane.showMessageDialog(this,"The book is not exist!","Warning",JOptionPane.WARNING_MESSAGE);
-//            }
-//            else if (Add.equals("The book is not available , you are added to the waiting list")) {
-//                JOptionPane.showMessageDialog(this,"The book is not available , you are added to the waiting list","Warning",JOptionPane.WARNING_MESSAGE);
-//            }
-//            else if(Add.equals("You are exceeded the maximum limit of borrows!")){
-//                JOptionPane.showMessageDialog(this,"You are exceeded the maximum limit of borrows!","Warning",JOptionPane.WARNING_MESSAGE);
-//            }
-//            else if(Add.equals("The borrow was successful!")){
-//                LocalDate returnDate=LocalDate.parse(borrowDateField.getText()).plusDays(20);
-//                tableModel.addRow(new Object[]{
-//                        Integer.parseInt(uniIDField.getText().trim()),
-//                        borrowerNameField.getText().trim(),
-//                        Long.parseLong(bookISBNField.getText().trim()),
-//                        LocalDate.parse(borrowDateField.getText().trim()),
-//                        returnDate,
-//                        (graduated ? "Graduate" : "Student")
-//                });
-//
-//                JOptionPane.showMessageDialog(this,"The borrow was successful!","Success",JOptionPane.INFORMATION_MESSAGE);
-//            }
-//
-//            this.dispose();
         }
     }
 

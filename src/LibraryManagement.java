@@ -22,7 +22,7 @@ public class LibraryManagement {
 
         //check book
         if (book==null) {
-            return "The book is not exist!";//الكتاب غير موجود
+            return "The book is not exist!";
         }
 
         //check if the book is not available
@@ -51,7 +51,6 @@ public class LibraryManagement {
         borrower = new BorrowerNode(studentID, name, bookISBN, borrowDate, isGraduate);
         borrower.setCurrentBorrowsCount(currentBorrowsCount + 1);
 
-        BorrowerNode root = borrowers.getRoot();
         borrowers.insert(borrower);
 
         return "The borrow was successful!";
@@ -87,19 +86,14 @@ public class LibraryManagement {
             fillSearchResults(searchResults,borrowers.getRoot(),studentID);
 
             for (BorrowerNode borrowerNode:searchResults){
-                if(borrowerNode.getBookISBN()==bookISBN && borrowerNode.getRecordStatus().equals("Active")){
+                if(borrowerNode.getBookISBN()==bookISBN && borrowerNode.getRecordStatus().equals("ACTIVE")){
                     BookNode book=books.search(books.getRoot(),bookISBN);
                     isReturnedSuccessfully=true;
-                    borrowerNode.setRecordStatus("Returned");
+                    borrowerNode.setRecordStatus("RETURNED");
                     boolean foundRequest=false;
 
                     while (waitingList.currentSize>0){
                         WaitingRequest currentRequest=waitingList.extractMax();
-
-                        System.out.println(
-                                "PROCESSING WAITING REQUEST: "
-                                        + currentRequest.getStudentID()
-                        );
 
                         if (currentRequest.getBookISBN() == bookISBN) {
                             book.setCopiesNum(book.getCopiesNum() + 1);
@@ -115,9 +109,8 @@ public class LibraryManagement {
 
                             if (result.equals("The borrow was successful!")) {
                                 foundRequest = true;
-                                break; // only stop if borrow actually succeeded
+                                break;
                             } else {
-                                // borrow failed, undo the copy increment and keep looking
                                 book.setCopiesNum(book.getCopiesNum() - 1);
                                 if (book.getCopiesNum() == 0)
                                     book.setStatus(false);

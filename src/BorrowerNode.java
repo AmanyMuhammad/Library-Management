@@ -12,7 +12,6 @@ public class BorrowerNode {
     private int currentBorrowsCount=0;
     private boolean isGraduate;
     private String recordStatus;
-
     BorrowerNode left;
     BorrowerNode right;
 
