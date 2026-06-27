@@ -137,47 +137,47 @@ public class LibraryFrame extends JFrame implements ActionListener {
         this.setVisible(true);
 
         this.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowOpened(WindowEvent e) {
-                    booksShowButton.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-                    booksShowButton.setBackground(backgroundColor);
-                    booksShowButton.setForeground(sidebarBgColor);
-                    booksShowButton.setIcon(brownBookIcon);
-                }
+            @Override
+            public void windowOpened(WindowEvent e) {
+                booksShowButton.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+                booksShowButton.setBackground(backgroundColor);
+                booksShowButton.setForeground(sidebarBgColor);
+                booksShowButton.setIcon(brownBookIcon);
+            }
 
-                @Override
-                public void windowClosing(WindowEvent e)  {
-                    dispose();
-                    System.exit(0);
-                }
+            @Override
+            public void windowClosing(WindowEvent e)  {
+                dispose();
+                System.exit(0);
+            }
 
-                @Override
-                public void windowClosed(WindowEvent e) {
+            @Override
+            public void windowClosed(WindowEvent e) {
 
-                }
+            }
 
-                @Override
-                public void windowIconified(WindowEvent e) {
+            @Override
+            public void windowIconified(WindowEvent e) {
 
-                }
+            }
 
-                @Override
-                public void windowDeiconified(WindowEvent e) {
+            @Override
+            public void windowDeiconified(WindowEvent e) {
 
-                }
+            }
 
-                @Override
-                public void windowActivated(WindowEvent e) {
+            @Override
+            public void windowActivated(WindowEvent e) {
 
-                }
+            }
 
-                @Override
-                public void windowDeactivated(WindowEvent e) {
+            @Override
+            public void windowDeactivated(WindowEvent e) {
 
-                }
-            });
+            }
+        });
 
-        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e){
@@ -232,12 +232,9 @@ public class LibraryFrame extends JFrame implements ActionListener {
                 BorrowersFrame currentBorrowers =Main.libraryManagement.borrowersFrame;
                 contentPane.add(currentBorrowers.pagePanel, BorderLayout.CENTER);
 
-
-//                contentPane.add(new BorrowersFrame().pagePanel, BorderLayout.CENTER);
                 contentPane.revalidate();
                 contentPane.repaint();
             }
-
         }
 
         if(e.getSource()==waitingListsShowButton){
@@ -249,7 +246,6 @@ public class LibraryFrame extends JFrame implements ActionListener {
             resetButtonState(booksShowButton, new ImageIcon(getClass().getResource("/Images/book.png")));
             resetButtonState(borrowersShowButton, new ImageIcon(getClass().getResource("/Images/borrower.png")));
 
-//            WaitingListFrame waitingListFrame=new WaitingListFrame();
             Container contentPane = this.getContentPane();
 
             BorderLayout layout = (BorderLayout) contentPane.getLayout();
@@ -261,7 +257,6 @@ public class LibraryFrame extends JFrame implements ActionListener {
                 contentPane.revalidate();
                 contentPane.repaint();
             }
-
         }
 
         if (e.getSource() == reportShowButton) {

@@ -40,7 +40,7 @@ public class BookTree {
         if (newAuthor.isEmpty() || newAuthor.trim().isEmpty() || newAuthor.equalsIgnoreCase("Author")) {
             newAuthor = target.getAuthor();
         }
-        if (newCopiesNum < 0 || newCopiesNum == target.getCopiesNum()) {
+        if (newCopiesNum < 0) {
             newCopiesNum = target.getCopiesNum();
         }
 
@@ -231,7 +231,7 @@ public class BookTree {
 
     public String getMostReadAuthor() {
         if (authorReadCounts.isEmpty())
-            return "No data";
+            return "No Data";
 
         return authorReadCounts.entrySet()
                 .stream()
@@ -252,6 +252,16 @@ public class BookTree {
             System.out.print(root.getISBN() + " ");
             displayHelper(root.right);
         }
+    }
+
+    public void recordBorrow(long ISBN) {
+        BookNode book = search(root, ISBN);
+        if (book == null) return;
+
+        book.setBorrowCount(book.getBorrowCount() + 1);
+
+        String author = book.getAuthor();
+        authorReadCounts.put(author, authorReadCounts.getOrDefault(author, 0) + 1);
     }
 
 }

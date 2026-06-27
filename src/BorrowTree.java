@@ -23,21 +23,20 @@ public class BorrowTree {
             root.right=insertBorrower(root.right,borrower);
 
         return root;
-
     }
 
     public boolean exists(BorrowerNode root,int borrowerId){
-            if(root==null)
-                return false;
+        if(root==null)
+            return false;
 
-            if(borrowerId==root.getStudentID())
-                return true;
+        if(borrowerId==root.getStudentID())
+            return true;
 
-            else if(borrowerId<root.getStudentID())
-                return exists(root.left,borrowerId);
+        else if(borrowerId<root.getStudentID())
+            return exists(root.left,borrowerId);
 
-            else
-                return exists(root.right,borrowerId);
+        else
+            return exists(root.right,borrowerId);
 
     }
 
@@ -56,16 +55,23 @@ public class BorrowTree {
 
     }
 
-    public BorrowerNode findBorrowRecord(BorrowerNode root, int studentID, long isbn, LocalDate borrowDate){
+    public BorrowerNode findBorrowRecord(
+            BorrowerNode root,
+            int studentID,
+            long isbn,
+            LocalDate borrowDate){
 
         if(root == null)
             return null;
 
-        if(root.getStudentID() == studentID && root.getBookISBN() == isbn && root.getBorrowDate().equals(borrowDate)){
+        if(root.getStudentID() == studentID
+                && root.getBookISBN() == isbn
+                && root.getBorrowDate().equals(borrowDate)){
             return root;
         }
 
-        BorrowerNode found = findBorrowRecord(root.left, studentID, isbn, borrowDate);
+        BorrowerNode found =
+                findBorrowRecord(root.left, studentID, isbn, borrowDate);
 
         if(found != null)
             return found;
@@ -94,7 +100,7 @@ public class BorrowTree {
             return 0;
 
         int borrowsNum=0;
-        if (root.getStudentID() == studentID && root.getRecordStatus().equals("Active")) {
+        if (root.getStudentID() == studentID && root.getRecordStatus().equals("ACTIVE")) {
             borrowsNum = 1;
         }
 
@@ -116,7 +122,7 @@ public class BorrowTree {
                 borrower.setName(newName);
             }
 
-            if (newBorrowDate!=null && !borrower.getBorrowDate().equals(newBorrowDate) && borrower.getRecordStatus().equals("Active")){
+            if (newBorrowDate!=null && !borrower.getBorrowDate().equals(newBorrowDate) && borrower.getRecordStatus().equals("ACTIVE")){
                 borrower.setBorrowDate(newBorrowDate);
                 borrower.setReturnDate(newBorrowDate.plusDays(20));
             }
@@ -134,6 +140,7 @@ public class BorrowTree {
         if(root==null)
             return;
 
+
         tableModel.addRow(new Object[]{
                 root.getStudentID(),
                 root.getName(),
@@ -145,7 +152,6 @@ public class BorrowTree {
         });
 
         System.out.println(root.getId());
-
         fillTableFromTree(root.left,tableModel);
         fillTableFromTree(root.right,tableModel);
     }

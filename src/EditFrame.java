@@ -175,10 +175,18 @@ public class EditFrame extends JFrame implements ActionListener {
             String author = authorField.getText();
             int copiesNum = Integer.parseInt(copiesNumField.getText());
 
-            Main.books.update(this.isbn, title, author, copiesNum);
+            if (copiesNum < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Copies number cannot be negative!",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Main.libraryManagement.books.update(this.isbn, title, author, copiesNum);
 
             booksFrame.tableModel.setRowCount(0);
-            booksFrame.fillTableFromTree(Main.books.getRoot());
+            booksFrame.fillTableFromTree(Main.libraryManagement.books.getRoot());
             booksFrame.pagePanel.remove(booksFrame.showPanel);
             booksFrame.pagePanel.revalidate();
             booksFrame.pagePanel.repaint();

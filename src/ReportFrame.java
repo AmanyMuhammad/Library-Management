@@ -35,13 +35,14 @@ public class ReportFrame extends JDialog {
         gbc.anchor = GridBagConstraints.WEST;
 
         // Fetch data
-        int availableBooks = Main.books.getAvailableBooksCount();
-        BookNode mostReadBook = Main.books.getMostReadBook();
-        String mostReadAuthor = Main.books.getMostReadAuthor();
+        int availableBooks = Main.libraryManagement.books.getAvailableBooksCount();
+        BookNode mostReadBook = Main.libraryManagement.books.getMostReadBook();
+        String mostReadAuthor = Main.libraryManagement.books.getMostReadAuthor();
 
         String mostReadBookText = (mostReadBook != null)
                 ? mostReadBook.getTitle() + " (" + mostReadBook.getBorrowCount() + " borrows)"
                 : "No data";
+        mostReadBookText = (mostReadBook.getBorrowCount() == 0) ? "No Data" : mostReadBookText;
 
         // Row 1 - Available Books
         gbc.gridy = 0; gbc.gridx = 0;

@@ -4,25 +4,25 @@ import java.time.LocalDate;
 public class Main {
 
     public static LibraryManagement libraryManagement = new LibraryManagement();
-    public static BookTree books = new BookTree();
-
 
     public static void main(String[] args) {
 
-//        books.insert(new BookNode(123456789, "Title 1", "Author 1", 5));
-//        books.insert(new BookNode(233456789, "Title 2", "Author 2", 0));
-//        books.insert(new BookNode(123456649, "Title 3", "Author 3", 6));
-//        books.insert(new BookNode(1234569, "Title 4", "Author 4", 13));
-//        books.insert(new BookNode(1233789, "Title 5", "Author 5", 0));
-//        books.insert(new BookNode(12356789, "Title 6", "Author 6", 50));
-//
-//        libraryManagement.addBorrower(101, "Ahmad", 123456789, LocalDate.parse("2026-06-01"), false);
-//        libraryManagement.addBorrower(102, "Sara", 1233789, LocalDate.parse("2026-06-10"), true);
+        libraryManagement.books.insert(new BookNode(978013468, "Effective Java", "Joshua Bloch", 5));
+        libraryManagement.books.insert(new BookNode(978013235, "Clean Code", "Robert C. Martin", 0));
+        libraryManagement.books.insert(new BookNode(978032135, "Design Patterns", "Erich Gamma", 3));
+        libraryManagement.books.insert(new BookNode(978059600, "Head First Java", "Kathy Sierra", 12));
+        libraryManagement.books.insert(new BookNode(978013449, "Core Java", "Cay S. Horstmann", 0));
+        libraryManagement.books.insert(new BookNode(978013708, "The Clean Coder", "Robert C. Martin", 8));
+
+        libraryManagement.addBorrower(2021101, "Ahmad Mansour", 978013468, LocalDate.parse("2026-06-01"), false);
+        libraryManagement.addBorrower(2019302, "Sara Al-Omer", 978032135, LocalDate.parse("2026-06-05"), true);
+        libraryManagement.addBorrower(2022105, "Nour Haddad", 978059600, LocalDate.parse("2026-06-12"), false);
+        libraryManagement.addBorrower(2020404, "Khaled Masri", 978013468, LocalDate.parse("2026-06-15"), false);
+        libraryManagement.addBorrower(2018209, "Reem Kassab", 978013708, LocalDate.parse("2026-06-20"), true);
 
         BooksFrame b = new BooksFrame();
         libraryManagement.borrowersFrame= new BorrowersFrame();
         libraryManagement.waitingListFrame = new WaitingListFrame();
-        libraryManagement.books=books;
         LibraryFrame f = new LibraryFrame(b.pagePanel);
     }
 }

@@ -169,11 +169,11 @@ public class AddFrame extends JFrame implements ActionListener {
 
             BookNode node = new BookNode(isbn, title, author, copiesNum);
 
-            Main.books.insert(node);
+            Main.libraryManagement.books.insert(node);
 
             //refresh
             booksFrame.tableModel.setRowCount(0);
-            booksFrame.fillTableFromTree(Main.books.getRoot());
+            booksFrame.fillTableFromTree(Main.libraryManagement.books.getRoot());
 
             this.dispose();
         }

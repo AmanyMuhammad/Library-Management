@@ -61,7 +61,7 @@ public class BookNode {
     }
 
     public String getStringStatus() {
-        return (this.status) ? "Available" : "Unavailable";
+        return (this.status) ? "AVAILABLE" : "UN AVAILABLE";
     }
 
     public int getBorrowCount() {

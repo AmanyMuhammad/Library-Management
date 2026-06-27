@@ -201,7 +201,7 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
             pagePanel.add(tablePanel, BorderLayout.CENTER);
             booksTable.addMouseListener(this);
 
-            fillTableFromTree(Main.books.getRoot());
+            fillTableFromTree(Main.libraryManagement.books.getRoot());
 //            tableModel.addRow(new Object[]{
 //                    "9780134685991",
 //                    "Effective Java",
@@ -252,11 +252,11 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
                     c.setFont(new Font("Segoe UI", Font.BOLD, 15));
 
                     switch (status) {
-                        case "Available":
+                        case "AVAILABLE":
                             c.setForeground(new Color(0, 166, 62));
                             break;
 
-                        case "Unavailable":
+                        case "UN AVAILABLE":
                             c.setForeground(new Color(231, 0, 11));
                             break;
 
@@ -351,9 +351,9 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
         statusValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
         statusValueLabel.setBounds(120, 280, 350, 40);
 
-        if (statusValueLabel.getText().contains("Available"))
+        if (statusValueLabel.getText().contains("AVAILABLE"))
             statusValueLabel.setForeground(new Color(0, 166, 62));
-        if (statusValueLabel.getText().contains("Un Available"))
+        if (statusValueLabel.getText().contains("UN AVAILABLE"))
             statusValueLabel.setForeground(new Color(231, 0, 11));
 
 
@@ -423,7 +423,7 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
                 AddFrame addFrame = new AddFrame(tableModel, this);
                 //refresh
                 tableModel.setRowCount(0);
-                fillTableFromTree(Main.books.getRoot());
+                fillTableFromTree(Main.libraryManagement.books.getRoot());
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
@@ -469,20 +469,20 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
                     isbn = Long.parseLong(booksTable.getValueAt(row, 0).toString());
                 }
 
-                Main.books.delete(isbn);
+                Main.libraryManagement.books.delete(isbn);
 
                 JOptionPane.showMessageDialog(null, "Deleted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 // refresh
                 tableModel.setRowCount(0);
-                fillTableFromTree(Main.books.getRoot());
+                fillTableFromTree(Main.libraryManagement.books.getRoot());
                 pagePanel.remove(showPanel);
                 pagePanel.revalidate();
                 pagePanel.repaint();
             }
         }
-            if(e.getSource()==searchButton){
-                filter();
-            }
+        if(e.getSource()==searchButton){
+            filter();
+        }
 
     }
 
@@ -493,11 +493,11 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
         // Check if search field is empty (If true ==> fill the table with all the information)
         if (title.isEmpty() || title.equalsIgnoreCase("Search by book name")) {
             tableModel.setRowCount(0);
-            fillTableFromTree(Main.books.getRoot());
+            fillTableFromTree(Main.libraryManagement.books.getRoot());
             return;
         }
 
-        fillSearchResults(searchResults, title, Main.books.getRoot());
+        fillSearchResults(searchResults, title, Main.libraryManagement.books.getRoot());
 
         tableModel.setRowCount(0);
         for (BookNode book : searchResults) {
