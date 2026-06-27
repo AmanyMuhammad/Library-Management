@@ -457,14 +457,7 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
                         tableModel.getValueAt(row,3).toString()
                 );
 
-                BorrowerNode borrower =
-                        Main.libraryManagement.borrowers.findBorrowRecord(
-                                Main.libraryManagement.borrowers.getRoot(),
-                                studentID,
-                                isbn,
-                                borrowDate
-                        );
-
+                BorrowerNode borrower=Main.libraryManagement.borrowers.findBorrowRecord(Main.libraryManagement.borrowers.getRoot(), studentID, isbn, borrowDate);
 
                 EditBorrowerInfo editBorrowerInfo = new EditBorrowerInfo(tableModel,row,borrower);
             } catch (IOException ex) {
