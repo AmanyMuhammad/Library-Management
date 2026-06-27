@@ -4,6 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ReturnBookFrame extends JFrame implements ActionListener {
 
@@ -12,11 +13,11 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
     JLabel returnLabel;
     JTextField uniIDField;
     JTextField bookISBNField;
-//    JTextField borrowerNameField;
+    //    JTextField borrowerNameField;
 //    JTextField borrowDateField;
 //    JTextField expectedReturnDateField;
     JButton returnButton;
-//    JButton editButton;
+    //    JButton editButton;
 //    JCheckBox graduateCheckBox;
     DefaultTableModel tableModel;
 //    int id;
@@ -173,17 +174,26 @@ public class ReturnBookFrame extends JFrame implements ActionListener {
         if(e.getSource() == returnButton){
 
             String Return=Main.libraryManagement.returnBook(Integer.parseInt(uniIDField.getText()),Long.parseLong(bookISBNField.getText()));
-            BorrowerNode root= Main.libraryManagement.borrowers.getRoot();
+            //BorrowerNode root= Main.libraryManagement.borrowers.getRoot();
             Main.libraryManagement.waitingListFrame.refreshTableData();
             Main.libraryManagement.borrowersFrame.refreshTableData();
 
-            BorrowerNode borrowerNode=Main.libraryManagement.borrowers.find(root,Integer.parseInt(uniIDField.getText()));
-            for (int i = 0; i <  Main.libraryManagement.borrowersFrame.borrowersTable.getRowCount(); i++) {
-                if(tableModel.getValueAt(i,0).equals(borrowerNode.getStudentID())){
-                    tableModel.setValueAt(borrowerNode.getRecordStatus(),i,6);
+
+            ArrayList<BorrowerNode> records = Main.libraryManagement.borrowerSearch(Integer.parseInt(uniIDField.getText()));
+            long returnedISBN = Long.parseLong(bookISBNField.getText());
+
+            for (BorrowerNode record : records) {
+                if (record.getBookISBN() == returnedISBN && record.getRecordStatus().equals("Returned")) {
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        if (tableModel.getValueAt(i, 0).equals(record.getStudentID())
+                                && tableModel.getValueAt(i, 2).equals(record.getBookISBN())
+                                && tableModel.getValueAt(i, 3).toString().equals(record.getBorrowDate().toString())) {
+                            tableModel.setValueAt("Returned", i, 6);
+                            break;
+                        }
+                    }
                     break;
                 }
-
             }
 
 

@@ -25,9 +25,9 @@ public class LibraryManagement {
             return "The book is not exist!";//الكتاب غير موجود
         }
 
-        //check if the book is available
+        //check if the book is not available
         if (!book.isStatus() || book.getCopiesNum()<=0) {
-            addWaitingRequest(studentID,name,bookISBN,isGraduate,borrowDate);
+            addWaitingRequest(studentID, name, bookISBN, isGraduate, borrowDate);
             return "The book is not available , you are added to the waiting list";
         }
 
@@ -45,6 +45,8 @@ public class LibraryManagement {
         book.setCopiesNum(book.getCopiesNum() - 1);
         if(book.getCopiesNum()==0)
             book.setStatus(false);
+
+        books.recordBorrow(bookISBN);
 
         borrower = new BorrowerNode(studentID, name, bookISBN, borrowDate, isGraduate);
         borrower.setCurrentBorrowsCount(currentBorrowsCount + 1);
@@ -99,8 +101,7 @@ public class LibraryManagement {
                                         + currentRequest.getStudentID()
                         );
 
-                        if (currentRequest.getBookISBN()==bookISBN){
-
+                        if (currentRequest.getBookISBN() == bookISBN) {
                             book.setCopiesNum(book.getCopiesNum() + 1);
                             book.setStatus(true);
 
@@ -112,10 +113,15 @@ public class LibraryManagement {
                                     currentRequest.isGraduate()
                             );
 
-                            System.out.println(result);
-
-                            foundRequest = true;
-                            break;
+                            if (result.equals("The borrow was successful!")) {
+                                foundRequest = true;
+                                break; // only stop if borrow actually succeeded
+                            } else {
+                                // borrow failed, undo the copy increment and keep looking
+                                book.setCopiesNum(book.getCopiesNum() - 1);
+                                if (book.getCopiesNum() == 0)
+                                    book.setStatus(false);
+                            }
                         }
 
                         list.add(currentRequest);
@@ -133,7 +139,6 @@ public class LibraryManagement {
             for (WaitingRequest request:list){
                 waitingList.insert(request);
             }
-
         }
 
         if (isReturnedSuccessfully) {
@@ -153,11 +158,8 @@ public class LibraryManagement {
 
     }
 
-    public void addWaitingRequest(int studentID, String studentName,long bookISBN,boolean isGraduate,LocalDate requestDate){
-        System.out.println("ADDED TO WAITING LIST: " + studentID);
-
-
-        WaitingRequest request=new WaitingRequest(studentID,studentName,bookISBN,isGraduate,requestDate);
+    public void addWaitingRequest(int studentID, String studentName, long bookISBN, boolean isGraduate, LocalDate requestDate) {
+        WaitingRequest request = new WaitingRequest(studentID, studentName, bookISBN, isGraduate, requestDate);
         waitingList.insert(request);
     }
 
