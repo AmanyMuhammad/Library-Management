@@ -142,8 +142,8 @@ public class LibraryManagement {
 
     }
 
-    public String updateBorrowerInfo(int id, String newName,LocalDate newBorrowDate){
-        if(borrowers.update(id,newName,newBorrowDate)){
+    public String updateBorrowerInfo(int studentID, String newName,LocalDate newBorrowDate){
+        if(borrowers.update(studentID,newName,newBorrowDate)){
             return "The borrower info updated successfully!";
         }
 
