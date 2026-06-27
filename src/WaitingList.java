@@ -120,6 +120,8 @@ public class WaitingList {
         if(index>=currentSize)
             return;
 
+        fillTableFromHeap(left(index),tableModel);
+
         tableModel.addRow(new Object[]{
                 waitingRequests[index].getStudentID(),
                 waitingRequests[index].getStudentName(),
@@ -128,7 +130,6 @@ public class WaitingList {
                 (waitingRequests[index].isGraduate() ? "Graduate":"Student")
         });
 
-        fillTableFromHeap(left(index),tableModel);
         fillTableFromHeap(right(index),tableModel);
     }
 

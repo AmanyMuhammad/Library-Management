@@ -55,28 +55,20 @@ public class BorrowTree {
 
     }
 
-    public BorrowerNode findBorrowRecord(
-            BorrowerNode root,
-            int studentID,
-            long isbn,
-            LocalDate borrowDate){
-
-        if(root == null)
+    public BorrowerNode findBorrowRecord(BorrowerNode root, int studentID, long isbn, LocalDate borrowDate){
+        if(root==null)
             return null;
 
-        if(root.getStudentID() == studentID
-                && root.getBookISBN() == isbn
-                && root.getBorrowDate().equals(borrowDate)){
+        if(root.getStudentID()==studentID && root.getBookISBN()==isbn && root.getBorrowDate().equals(borrowDate)){
             return root;
         }
 
-        BorrowerNode found =
-                findBorrowRecord(root.left, studentID, isbn, borrowDate);
+        BorrowerNode found=findBorrowRecord(root.left,studentID,isbn,borrowDate);
 
-        if(found != null)
+        if(found!=null)
             return found;
 
-        return findBorrowRecord(root.right, studentID, isbn, borrowDate);
+        return findBorrowRecord(root.right,studentID,isbn,borrowDate);
     }
 
     public int countCurrentBorrowsNum(BorrowerNode root,int studentID){
@@ -84,7 +76,7 @@ public class BorrowTree {
             return 0;
 
         int borrowsNum=0;
-        if (root.getStudentID() == studentID && root.getRecordStatus().equals("ACTIVE")) {
+        if (root.getStudentID() == studentID && root.getRecordStatus().equalsIgnoreCase("ACTIVE")) {
             borrowsNum = 1;
         }
 
@@ -106,7 +98,7 @@ public class BorrowTree {
                 borrower.setName(newName);
             }
 
-            if (newBorrowDate!=null && !borrower.getBorrowDate().equals(newBorrowDate) && borrower.getRecordStatus().equals("ACTIVE")){
+            if (newBorrowDate!=null && !borrower.getBorrowDate().equals(newBorrowDate) && borrower.getRecordStatus().equalsIgnoreCase("ACTIVE")){
                 borrower.setBorrowDate(newBorrowDate);
                 borrower.setReturnDate(newBorrowDate.plusDays(20));
             }
@@ -124,6 +116,7 @@ public class BorrowTree {
         if(root==null)
             return;
 
+        fillTableFromTree(root.left,tableModel);
 
         tableModel.addRow(new Object[]{
                 root.getStudentID(),
@@ -135,7 +128,6 @@ public class BorrowTree {
                 root.getRecordStatus()
         });
 
-        fillTableFromTree(root.left,tableModel);
         fillTableFromTree(root.right,tableModel);
     }
 
