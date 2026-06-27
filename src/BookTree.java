@@ -249,7 +249,6 @@ public class BookTree {
 
         if (root != null) {
             displayHelper(root.left);
-            System.out.print(root.getISBN() + " ");
             displayHelper(root.right);
         }
     }

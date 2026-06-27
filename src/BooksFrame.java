@@ -27,11 +27,9 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
     JTable booksTable;
     JScrollPane scrollPane;
     DefaultTableModel tableModel;
-    String searchedName;
     Color backgroundColor;
     Color mainTextColor;
     Color sidebarBgColor;
-    BookNode chosenNode;
 
 
     public BooksFrame() {
@@ -86,15 +84,6 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
                 }
             });
         }
-
-        //backButton
-//            backButton=new JButton("Back");
-//            backButton.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 15));
-//            backButton.setBackground(primary);
-//            backButton.setForeground(textColor);
-//            backButton.setFocusable(false);
-//            backButton.setBounds(10,5,80,30);
-//            pagePanel.add(backButton);
 
         //searchButton
         {
@@ -186,7 +175,6 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
             scrollPane.getViewport().setBackground(backgroundColor);
             JTableHeader header = booksTable.getTableHeader();
             header.setReorderingAllowed(false);
-//                header.setOpaque(true);
             tablePanel.add(scrollPane, BorderLayout.CENTER);
             tablePanel.setFocusable(true);
             tablePanel.addMouseListener(new MouseAdapter() {
@@ -202,13 +190,6 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
             booksTable.addMouseListener(this);
 
             fillTableFromTree(Main.libraryManagement.books.getRoot());
-//            tableModel.addRow(new Object[]{
-//                    "9780134685991",
-//                    "Effective Java",
-//                    "Joshua Bloch",
-//                    5,
-//                    "Available"
-//            });
 
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -269,7 +250,6 @@ public class BooksFrame extends JPanel implements ActionListener,MouseListener,F
         }
 
         searchButton.addActionListener(this);
-//            backButton.addActionListener(this);
         addButton.addActionListener(this);
 
         this.add(pagePanel);

@@ -79,22 +79,6 @@ public class BorrowTree {
         return findBorrowRecord(root.right, studentID, isbn, borrowDate);
     }
 
-//    public BorrowerNode findById(BorrowerNode root, int id) {
-//        if (root == null)
-//            return null;
-//
-//        if (root.getId() == id) {
-//            System.out.println("findById : " + root.getId());
-//            return root;
-//        }
-//
-//        BorrowerNode leftResult = findById(root.left, id);
-//        if (leftResult != null)
-//            return leftResult;
-//
-//        return findById(root.right, id);
-//    }
-
     public int countCurrentBorrowsNum(BorrowerNode root,int studentID){
         if(root==null)
             return 0;
@@ -151,7 +135,6 @@ public class BorrowTree {
                 root.getRecordStatus()
         });
 
-        System.out.println(root.getId());
         fillTableFromTree(root.left,tableModel);
         fillTableFromTree(root.right,tableModel);
     }

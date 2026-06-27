@@ -217,9 +217,6 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
             pagePanel.add(tablePanel, BorderLayout.CENTER);
             borrowersTable.addMouseListener(this);
 
-            // Sample row
-//            tableModel.addRow(new Object[]{"B001", "Alice Johnson", "alice@example.com", "555-1234", 2});
-
             tableModel.setRowCount(0);
 
             if (Main.libraryManagement.borrowers != null && Main.libraryManagement.borrowers.getRoot() != null) {
@@ -380,6 +377,21 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         statusValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
         statusValueLabel.setBounds(220, 340, 350, 40);
 
+        //record status
+        JLabel recordStatusLabel = new JLabel("Record Status : ");
+        recordStatusLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        recordStatusLabel.setBounds(30, 400, 350, 40);
+
+        JLabel recordStatusValLabel = new JLabel(borrowersTable.getValueAt(row, 6).toString());
+        recordStatusValLabel.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+        recordStatusValLabel.setBounds(220, 400, 350, 40);
+
+        if (recordStatusValLabel.getText().contains("ACTIVE"))
+            recordStatusValLabel.setForeground(new Color(0, 166, 62));
+        if (recordStatusValLabel.getText().contains("RETURNED"))
+            recordStatusValLabel.setForeground(new Color(108, 117, 125));
+
+
         // Edit button
         ImageIcon originalEditIcon = new ImageIcon(getClass().getResource("/Images/edit1.png"));
         Image imgEdit = originalEditIcon.getImage();
@@ -412,7 +424,8 @@ public class BorrowersFrame extends JPanel implements ActionListener, MouseListe
         showPanel.add(returnDateValueLabel);
         showPanel.add(statusLabel);
         showPanel.add(statusValueLabel);
-//        showPanel.add(deleteButton);
+        showPanel.add(recordStatusLabel);
+        showPanel.add(recordStatusValLabel);
         showPanel.add(editButton);
         showPanel.add(hideButton);
 
